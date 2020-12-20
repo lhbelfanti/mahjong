@@ -1,0 +1,3 @@
+# mahjong
+
+Unity Mahjong prototype
