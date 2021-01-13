@@ -14,6 +14,4 @@ public class BoardManager : MonoBehaviour
 	{
 		_boardCreator.CreateBoard("1");
 	}
-
-
 }
