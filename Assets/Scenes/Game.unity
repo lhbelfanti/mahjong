@@ -174,7 +174,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 5.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -199,7 +199,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -5}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 2}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -244,6 +244,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1881300060}
   - component: {fileID: 1881300059}
+  - component: {fileID: 1881300061}
+  - component: {fileID: 1881300062}
   m_Layer: 0
   m_Name: BoardManager
   m_TagString: Untagged
@@ -260,12 +262,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1881300058}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d973f18ce7ae14a47b8f5bc2b3a00aff, type: 3}
+  m_Script: {fileID: 11500000, guid: b38d03313d8584dd7a55e46385363c52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileGameObject: {fileID: -4243762241950377464, guid: 6423f5f995d4849c7915e6b126ebb646,
-    type: 3}
-  boardGameObject: {fileID: 592605297}
 --- !u!4 &1881300060
 Transform:
   m_ObjectHideFlags: 0
@@ -280,3 +279,32 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1881300061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1881300058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f250772c22bbe49deb5af8c31b0217c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tileGameObject: {fileID: -4243762241950377464, guid: 6423f5f995d4849c7915e6b126ebb646,
+    type: 3}
+  _boardGameObject: {fileID: 592605297}
+--- !u!114 &1881300062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1881300058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40beff694610d44caa35747b0109ba13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _camera: {fileID: 519420031}
+  _matchNumber: 2

@@ -1,25 +1,15 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 using Random = System.Random;
 
-public class BoardManager : MonoBehaviour
+public class BoardCreator : MonoBehaviour
 {
-	[SerializeField]
-	private Tile tileGameObject;
-	[SerializeField]
-	private Transform boardGameObject;
+	[SerializeField] private Tile _tileGameObject;
+	[SerializeField] private Transform _boardGameObject;
+	private List<List<Tile>> _boardTiles = new List<List<Tile>>();
 
-	private List<List<Tile>> boardTiles = new List<List<Tile>>();
-
-	void Start()
-	{
-		CreateBoard("1");
-	}
-
-	private void CreateBoard(string levelId)
+	public void CreateBoard(string levelId)
 	{
 		TextAsset levelJson = Resources.Load<TextAsset> ("Text/level" + levelId);
 		LevelData levelData = JsonUtility.FromJson<LevelData>(levelJson.text);
@@ -32,12 +22,12 @@ public class BoardManager : MonoBehaviour
 			List<LevelTiles> levelTiles = levelInfo[i].rows;
 			for (int j = 0; j < levelTiles.Count; j++)
 			{
-				boardTiles.Add(new List<Tile>());
+				_boardTiles.Add(new List<Tile>());
 				List<int> tiles = levelTiles[j].tiles;
 				for (int k = 0; k < tiles.Count; k++)
 				{
 					Tile tile = CreateTile(k, j, levelTiles, tiles, images);
-					boardTiles[j].Add(tile);
+					_boardTiles[j].Add(tile);
 				}
 			}
 		}
@@ -87,28 +77,33 @@ public class BoardManager : MonoBehaviour
 	private Tile CreateTile(int x, int y, List<LevelTiles> levelTiles, List<int> tiles, List<Sprite> images)
 	{
 		int state = tiles[x];
-		Vector3 localScale = tileGameObject.transform.localScale;
+		Vector3 localScale = _tileGameObject.transform.localScale;
 		if (x == 0 && y == 0)
 		{
 			float bPosX = levelTiles.Count / 2 * localScale.x - localScale.x / 2;
 			float bPosY = tiles.Count / 2 * localScale.y - localScale.y / 2;
-			boardGameObject.position = new Vector3(-bPosX, bPosY, 0);
+			_boardGameObject.position = new Vector3(-bPosX, bPosY, 0);
 		}
 
-		Vector3 boardPos = boardGameObject.position;
+		Vector3 boardPos = _boardGameObject.position;
 		float xPos = x * localScale.x + boardPos.x;
 		float yPos = y * localScale.y - boardPos.y;
-		Tile tileGO = Instantiate(tileGameObject, new Vector3(xPos, -yPos, 0), Quaternion.identity);
-		tileGO.transform.SetParent(boardGameObject);
-		tileGO.transform.name = $"{x}x{y}";
+		Tile tile = Instantiate(_tileGameObject, new Vector3(xPos, -yPos, 0), Quaternion.identity);
+		Color c = tile.Unselected;
+		tile.GetComponent<SpriteRenderer>().color = new Color(c.r, c.g, c.b, 0);
+		tile.transform.SetParent(_boardGameObject);
+		tile.transform.name = $"{x}x{y}";
 		if (state != 0)
 		{
-			tileGO.GetComponent<SpriteRenderer>().sprite = images[0];
+			tile.GetComponent<SpriteRenderer>().sprite = images[0];
+			tile.TileId = images[0].name;
 			images.RemoveAt(0);
 		}
-		tileGO.CurrentState = state;
+		else
+		{
+			tile.gameObject.SetActive(false);
+		}
 
-
-		return tileGO;
+		return tile;
 	}
 }
