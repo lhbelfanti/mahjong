@@ -9,9 +9,9 @@ public class BoardCreator : MonoBehaviour
 	[SerializeField] private Transform _boardGameObject;
 	private List<List<Tile>> _boardTiles = new List<List<Tile>>();
 
-	public void CreateBoard(string levelId)
+	public void CreateBoard(int levelId)
 	{
-		TextAsset levelJson = Resources.Load<TextAsset> ("Text/level" + levelId);
+		TextAsset levelJson = Resources.Load<TextAsset> ("Text/level" + levelId.ToString());
 		LevelData levelData = JsonUtility.FromJson<LevelData>(levelJson.text);
 		List<LevelInfo> levelInfo = levelData.data;
 

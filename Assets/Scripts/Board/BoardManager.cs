@@ -12,6 +12,7 @@ public class BoardManager : MonoBehaviour
 
 	void Start()
 	{
-		_boardCreator.CreateBoard("1");
+		int levelSelected = PlayerPrefs.GetInt("LevelSelected");
+		_boardCreator.CreateBoard(levelSelected);
 	}
 }
