@@ -77,11 +77,17 @@ public class BoardCreator : MonoBehaviour
 	{
 		Sprite[] images = Resources.LoadAll<Sprite>("Images/Tiles/");
 		List<Sprite> sprites = images.ToList();
+		Random rnd = new Random();
+
 		int pairs = tilesCount / 2;
+		while (pairs > sprites.Count)
+		{
+			int pos = rnd.Next(0, sprites.Count - 1);
+			sprites.Add(sprites[pos]);
+		}
 
 		List<Sprite> totalTiles = new List<Sprite>();
 
-		Random rnd = new Random();
 		for (int i = 0; i < pairs; i++)
 		{
 			int pos = rnd.Next(0, sprites.Count - 1);
@@ -98,7 +104,6 @@ public class BoardCreator : MonoBehaviour
 		int state = tiles[(int) index.x];
 		if (state == 0)
 			return null;
-
 
 		int x = (int) index.x;
 		int y = (int) index.y;
@@ -117,9 +122,10 @@ public class BoardCreator : MonoBehaviour
 			_floors[z].transform.SetParent(_boardGameObject);
 		}
 		tile.transform.SetParent(_floors[z].transform);
-		tile.transform.name = $"{x}x{y}x{z}";
-		tile.SpriteRenderer.sprite = images[0];
 		tile.TileId = images[0].name;
+		tile.TileIndex = index;
+		tile.transform.name = $"{x}x{y}x{z}-{tile.TileId}";
+		tile.SpriteRenderer.sprite = images[0];
 		images.RemoveAt(0);
 
 

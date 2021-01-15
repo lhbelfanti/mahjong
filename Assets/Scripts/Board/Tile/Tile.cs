@@ -12,6 +12,7 @@ public class Tile : MonoBehaviour
 
 	private bool _tileSelected;
 	private string _tileId;
+	private Vector3 _tileIndex;
 	private Animator _animator;
 
 	// Animation States
@@ -43,6 +44,12 @@ public class Tile : MonoBehaviour
 	{
 		get => _tileId;
 		set => _tileId = value;
+	}
+
+	public Vector3 TileIndex
+	{
+		get => _tileIndex;
+		set => _tileIndex = value;
 	}
 
 	public Color Selected => _selected;
