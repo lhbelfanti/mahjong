@@ -7,6 +7,7 @@ public class BoardCreator : MonoBehaviour
 {
 	[SerializeField] private Tile _tileGameObject;
 	[SerializeField] private Transform _boardGameObject;
+	[SerializeField] private float _tileShift;
 	private Tile[,,] _boardTiles;
 	private GameObject[] _floors;
 
@@ -94,15 +95,18 @@ public class BoardCreator : MonoBehaviour
 
 	private Tile CreateTile(Vector3 index, List<int> tiles, List<Sprite> images)
 	{
+		int state = tiles[(int) index.x];
+		if (state == 0)
+			return null;
+
+
 		int x = (int) index.x;
 		int y = (int) index.y;
 		int z = (int) index.z;
-
-		int state = tiles[x];
 		Rect tileRect = _tileGameObject.GetComponent<RectTransform>().rect;
 		Vector3 boardPos = _boardGameObject.position;
-		float xPos = boardPos.x + tileRect.width * x - z;
-		float yPos = boardPos.y - tileRect.height * y;
+		float xPos = boardPos.x + tileRect.width * x + _tileShift * x - _tileShift * z;
+		float yPos = boardPos.y - tileRect.height * y + _tileShift * y;
 
 		Tile tile = Instantiate(_tileGameObject, new Vector3(xPos, yPos, -z), Quaternion.identity);
 		Color c = tile.Unselected;
@@ -113,18 +117,11 @@ public class BoardCreator : MonoBehaviour
 			_floors[z].transform.SetParent(_boardGameObject);
 		}
 		tile.transform.SetParent(_floors[z].transform);
-		tile.transform.name = $"{x}x{y}";
+		tile.transform.name = $"{x}x{y}x{z}";
+		tile.SpriteRenderer.sprite = images[0];
+		tile.TileId = images[0].name;
+		images.RemoveAt(0);
 
-		if (state != 0)
-		{
-			tile.SpriteRenderer.sprite = images[0];
-			tile.TileId = images[0].name;
-			images.RemoveAt(0);
-		}
-		else
-		{
-			tile.gameObject.SetActive(false);
-		}
 
 		return tile;
 	}

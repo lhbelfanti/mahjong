@@ -455,6 +455,7 @@ MonoBehaviour:
   _tileGameObject: {fileID: 5943988702286095783, guid: 1ac714296dc904340965688456930bd7,
     type: 3}
   _boardGameObject: {fileID: 592605297}
+  _tileShift: 0.08
 --- !u!114 &1881300062
 MonoBehaviour:
   m_ObjectHideFlags: 0
