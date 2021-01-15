@@ -77,18 +77,11 @@ public class BoardCreator : MonoBehaviour
 	private Tile CreateTile(int x, int y, List<LevelTiles> levelTiles, List<int> tiles, List<Sprite> images)
 	{
 		int state = tiles[x];
-		Vector3 localScale = _tileGameObject.transform.localScale;
-		if (x == 0 && y == 0)
-		{
-			float bPosX = levelTiles.Count / 2 * localScale.x - localScale.x / 2;
-			float bPosY = tiles.Count / 2 * localScale.y - localScale.y / 2;
-			_boardGameObject.position = new Vector3(-bPosX, bPosY, 0);
-		}
-
+		Rect tileRect = _tileGameObject.GetComponent<RectTransform>().rect;
 		Vector3 boardPos = _boardGameObject.position;
-		float xPos = x * localScale.x + boardPos.x;
-		float yPos = y * localScale.y - boardPos.y;
-		Tile tile = Instantiate(_tileGameObject, new Vector3(xPos, -yPos, 0), Quaternion.identity);
+		float xPos = boardPos.x + tileRect.width * x;
+		float yPos = boardPos.y - tileRect.height * y;
+		Tile tile = Instantiate(_tileGameObject, new Vector3(xPos, yPos, 0), Quaternion.identity);
 		Color c = tile.Unselected;
 		tile.SpriteRenderer.color = new Color(c.r, c.g, c.b, 1);
 		tile.transform.SetParent(_boardGameObject);
