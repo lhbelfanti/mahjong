@@ -16,7 +16,7 @@ public class BoardSelector : MonoBehaviour
 			RaycastHit2D hit = Physics2D.Raycast(_camera.ScreenToWorldPoint(Input.mousePosition), Vector2.up);
 			if (hit.collider)
 			{
-				Tile tile = hit.collider.GetComponent<Tile>();
+				Tile tile = hit.collider.GetComponentInParent<Tile>();
 				SelectTile(tile);
 			}
 			else
@@ -34,12 +34,12 @@ public class BoardSelector : MonoBehaviour
 		if (!_selectedTiles.Contains(tile))
 		{
 			_selectedTiles.Add(tile);
-			tile.GetComponent<SpriteRenderer>().color = tile.Selected;
+			tile.SpriteRenderer.color = tile.Selected;
 		}
 		else
 		{
 			_selectedTiles.Remove(tile);
-			tile.GetComponent<SpriteRenderer>().color = tile.Unselected;
+			tile.SpriteRenderer.color = tile.Unselected;
 		}
 
 		if (_selectedTiles.Count == _matchNumber)
@@ -85,7 +85,7 @@ public class BoardSelector : MonoBehaviour
 	{
 		foreach (Tile t in _selectedTiles)
 		{
-			t.GetComponent<SpriteRenderer>().color = t.Unselected;
+			t.SpriteRenderer.color = t.Unselected;
 		}
 		_selectedTiles.Clear();
 	}

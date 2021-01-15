@@ -90,12 +90,12 @@ public class BoardCreator : MonoBehaviour
 		float yPos = y * localScale.y - boardPos.y;
 		Tile tile = Instantiate(_tileGameObject, new Vector3(xPos, -yPos, 0), Quaternion.identity);
 		Color c = tile.Unselected;
-		tile.GetComponent<SpriteRenderer>().color = new Color(c.r, c.g, c.b, 0);
+		tile.SpriteRenderer.color = new Color(c.r, c.g, c.b, 1);
 		tile.transform.SetParent(_boardGameObject);
 		tile.transform.name = $"{x}x{y}";
 		if (state != 0)
 		{
-			tile.GetComponent<SpriteRenderer>().sprite = images[0];
+			tile.SpriteRenderer.sprite = images[0];
 			tile.TileId = images[0].name;
 			images.RemoveAt(0);
 		}

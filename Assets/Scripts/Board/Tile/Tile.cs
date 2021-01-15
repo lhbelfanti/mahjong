@@ -8,6 +8,7 @@ public class Tile : MonoBehaviour
 
 	[SerializeField] private Color _selected;
 	[SerializeField] private Color _unselected;
+	[SerializeField] private SpriteRenderer _sprite;
 
 	private bool _tileSelected;
 	private string _tileId;
@@ -46,4 +47,5 @@ public class Tile : MonoBehaviour
 
 	public Color Selected => _selected;
 	public Color Unselected => _unselected;
+	public SpriteRenderer SpriteRenderer => _sprite;
 }
