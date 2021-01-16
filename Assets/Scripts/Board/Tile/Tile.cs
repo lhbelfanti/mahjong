@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
@@ -11,8 +8,6 @@ public class Tile : MonoBehaviour
 	[SerializeField] private SpriteRenderer _sprite;
 
 	private bool _tileSelected;
-	private string _tileId;
-	private Vector3 _tileIndex;
 	private Animator _animator;
 
 	// Animation States
@@ -40,18 +35,8 @@ public class Tile : MonoBehaviour
 		_animator.SetTrigger(ShakeState);
 	}
 
-	public string TileId
-	{
-		get => _tileId;
-		set => _tileId = value;
-	}
-
-	public Vector3 TileIndex
-	{
-		get => _tileIndex;
-		set => _tileIndex = value;
-	}
-
+	public string TileId { get; set; }
+	public Vector3 TileIndex { get; set; }
 	public Color Selected => _selected;
 	public Color Unselected => _unselected;
 	public SpriteRenderer SpriteRenderer => _sprite;

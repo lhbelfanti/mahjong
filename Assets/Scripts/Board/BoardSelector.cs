@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class BoardSelector : MonoBehaviour
 {
-
 	[SerializeField] private Camera _camera;
 	[SerializeField] private int _matchNumber;
 
@@ -20,9 +19,7 @@ public class BoardSelector : MonoBehaviour
 				SelectTile(tile);
 			}
 			else
-			{
 				UnselectAllTiles();
-			}
 		}
 	}
 
@@ -53,7 +50,6 @@ public class BoardSelector : MonoBehaviour
 			foreach (Tile t in _selectedTiles)
 			{
 				t.MatchAnim();
-
 			}
 		}
 		else
@@ -61,7 +57,6 @@ public class BoardSelector : MonoBehaviour
 			foreach (Tile t in _selectedTiles)
 			{
 				t.WrongMatchAnim();
-
 			}
 			UnselectAllTiles();
 		}

@@ -75,7 +75,6 @@ public class BoardCreator : MonoBehaviour
 
 				if (rows < tiles.Count)
 					rows = tiles.Count;
-
 			}
 
 			if (cols < levelTiles.Count)
@@ -175,4 +174,6 @@ public class BoardCreator : MonoBehaviour
 		bottomTile = null;
 		return false;
 	}
+
+	public Tile[,,] BoardTiles => _boardTiles;
 }
