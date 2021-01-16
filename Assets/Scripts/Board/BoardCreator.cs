@@ -33,8 +33,23 @@ public class BoardCreator : MonoBehaviour
 				List<int> tiles = levelTiles[j].tiles;
 				for (int k = 0; k < tiles.Count; k++)
 				{
-					Tile tile = CreateTile(new Vector3(k, j, f), tiles, images);
-					_boardTiles[i, j, f] = tile;
+					int state = tiles[k];
+					switch (state)
+					{
+						case 0: // Handling the empty case. Should not create a tile.
+							_boardTiles[k, j, f] = null;
+							break;
+						case 1: // Handling the basic case
+							_boardTiles[k, j, f] = CreateTile(new Vector3(k, j, f), images);
+							break;
+						case 2: // Handling the case where the tile should be over 2 other tiles (in the middle)
+						{
+							_boardTiles[k, j, f] = CreateTile(new Vector3(k, j, f), images, 2, (int) boardSize.x);
+							_boardTiles[k + 1, j, f] = null;
+							k++;
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -99,36 +114,65 @@ public class BoardCreator : MonoBehaviour
 		return totalTiles;
 	}
 
-	private Tile CreateTile(Vector3 index, List<int> tiles, List<Sprite> images)
+	private Tile CreateTile(Vector3 index, List<Sprite> images, int state = 1, int boardSize = 0)
 	{
-		int state = tiles[(int) index.x];
-		if (state == 0)
-			return null;
-
 		int x = (int) index.x;
 		int y = (int) index.y;
-		int z = (int) index.z;
+		int floor = (int) index.z;
 		Rect tileRect = _tileGameObject.GetComponent<RectTransform>().rect;
 		Vector3 boardPos = _boardGameObject.position;
-		float xPos = boardPos.x + tileRect.width * x + _tileShift * x - _tileShift * z;
+
+		float xPos;
+		if (state == 2)
+		{
+			bool shouldShift = ShouldShiftTile(index, boardSize, out Tile bottomTile);
+			xPos = boardPos.x + tileRect.width * x + tileRect.width / 2 -
+			       (shouldShift ? _tileShift * (int) bottomTile.TileIndex.z : 0);
+		}
+		else
+			xPos = boardPos.x + tileRect.width * x - _tileShift * floor;
+
 		float yPos = boardPos.y - tileRect.height * y + _tileShift * y;
 
-		Tile tile = Instantiate(_tileGameObject, new Vector3(xPos, yPos, -z), Quaternion.identity);
+		Tile tile = Instantiate(_tileGameObject, new Vector3(xPos, yPos, -floor), Quaternion.identity);
 		Color c = tile.Unselected;
 		tile.SpriteRenderer.color = new Color(c.r, c.g, c.b, 1);
-		if (!_floors[z])
+		if (!_floors[floor])
 		{
-			_floors[z] = new GameObject("Floor " + z.ToString());
-			_floors[z].transform.SetParent(_boardGameObject);
+			_floors[floor] = new GameObject("Floor " + floor.ToString());
+			_floors[floor].transform.SetParent(_boardGameObject);
 		}
-		tile.transform.SetParent(_floors[z].transform);
+		tile.transform.SetParent(_floors[floor].transform);
 		tile.TileId = images[0].name;
 		tile.TileIndex = index;
-		tile.transform.name = $"{x}x{y}x{z}-{tile.TileId}";
+		tile.transform.name = $"({x.ToString()}x{y.ToString()})-{floor.ToString()}-{tile.TileId}";
 		tile.SpriteRenderer.sprite = images[0];
 		images.RemoveAt(0);
 
-
 		return tile;
+	}
+
+	private bool ShouldShiftTile(Vector3 index, int boardSize, out Tile bottomTile)
+	{
+		int x = (int) index.x;
+		int y = (int) index.y;
+		int floor = (int) index.z;
+
+		// If the tile is over another tile and the next one to the one that is at the bottom is null,
+		// then I know that the tile should position over the one that is in the bottom, shifted to the left in x.
+		// Example -> My tile: (0, 0) floor 1 --- Bottom tile: (0, 0) floor 0 --- Next bottom tile: (1, 0) floor 0
+		// If it's null then I know that in the level config there is a 2 in position (0,0,0) and position (1,0,0), and
+		// I should position it over the bottom tile but shifted to the left in x.
+		if (floor != 0 && _boardTiles[x, y, floor - 1])
+		{
+			if (x <= boardSize - 1 && !_boardTiles[x + 1, y, floor - 1])
+			{
+				bottomTile = _boardTiles[x, y, floor - 1];
+				return true;
+			}
+		}
+
+		bottomTile = null;
+		return false;
 	}
 }
