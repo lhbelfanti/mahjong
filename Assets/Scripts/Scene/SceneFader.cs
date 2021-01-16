@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.UIElements;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using Image = UnityEngine.UI.Image;
