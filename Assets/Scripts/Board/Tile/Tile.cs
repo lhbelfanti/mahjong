@@ -1,7 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
+	public enum States
+	{
+		Empty = 0,
+		Single = 1,
+		Double = 2,
+		Dummy = 3
+	}
 
 	[SerializeField] private Color _selected;
 	[SerializeField] private Color _unselected;
@@ -23,6 +31,7 @@ public class Tile : MonoBehaviour
 	private void Start()
 	{
 		_animator.SetTrigger(CreationState);
+		Selected(false);
 	}
 
 	public void MatchAnim()
@@ -35,9 +44,13 @@ public class Tile : MonoBehaviour
 		_animator.SetTrigger(ShakeState);
 	}
 
-	public string TileId { get; set; }
-	public Vector3 TileIndex { get; set; }
-	public Color Selected => _selected;
-	public Color Unselected => _unselected;
+	public void Selected(bool value)
+	{
+		_sprite.color = value ? _selected : _unselected;
+	}
+
+	public string Id { get; set; }
+	public States State { get; set; }
+	public Vector3 Index { get; set; }
 	public SpriteRenderer SpriteRenderer => _sprite;
 }

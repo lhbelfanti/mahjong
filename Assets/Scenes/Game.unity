@@ -407,6 +407,7 @@ GameObject:
   - component: {fileID: 1881300059}
   - component: {fileID: 1881300061}
   - component: {fileID: 1881300062}
+  - component: {fileID: 1881300063}
   m_Layer: 0
   m_Name: BoardManager
   m_TagString: Untagged
@@ -470,3 +471,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _camera: {fileID: 519420031}
   _matchNumber: 2
+--- !u!114 &1881300063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1881300058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4ccb184e57124716a6c03ce0f14a8dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

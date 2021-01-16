@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,36 +8,47 @@ public class BoardSelector : MonoBehaviour
 	[SerializeField] private int _matchNumber;
 
 	private List<Tile> _selectedTiles = new List<Tile>();
+	private BoardMatcher _boardMatcher;
 
-	void Update()
+	private void Awake()
+	{
+		_boardMatcher = GetComponent<BoardMatcher>();
+	}
+
+	private void Update()
 	{
 		if (Input.GetMouseButtonDown(0))
 		{
 			RaycastHit2D hit = Physics2D.Raycast(_camera.ScreenToWorldPoint(Input.mousePosition), Vector2.up);
 			if (hit.collider)
 			{
-				Tile tile = hit.collider.GetComponentInParent<Tile>();
-				SelectTile(tile);
+				Tile tile = hit.collider.transform.parent.GetComponent<Tile>();
+				if (_boardMatcher.CanBeSelected(tile))
+					SelectTile(tile);
+				else
+				{
+					// If the tile cannot be selected, the wrong match animation should be played
+					_selectedTiles.Add(tile);
+					UnselectTiles();
+				}
 			}
-			else
-				UnselectAllTiles();
 		}
 	}
 
 	private void SelectTile(Tile tile)
 	{
 		if (_selectedTiles.Count == _matchNumber && !_selectedTiles.Contains(tile))
-			UnselectAllTiles();
+			UnselectTiles();
 
 		if (!_selectedTiles.Contains(tile))
 		{
 			_selectedTiles.Add(tile);
-			tile.SpriteRenderer.color = tile.Selected;
+			tile.Selected(true);
 		}
 		else
 		{
 			_selectedTiles.Remove(tile);
-			tile.SpriteRenderer.color = tile.Unselected;
+			tile.Selected(false);
 		}
 
 		if (_selectedTiles.Count == _matchNumber)
@@ -45,7 +57,7 @@ public class BoardSelector : MonoBehaviour
 
 	private void MatchTiles()
 	{
-		if (AreAllSame())
+		if (_boardMatcher.Match(_selectedTiles))
 		{
 			foreach (Tile t in _selectedTiles)
 			{
@@ -53,34 +65,15 @@ public class BoardSelector : MonoBehaviour
 			}
 		}
 		else
-		{
-			foreach (Tile t in _selectedTiles)
-			{
-				t.WrongMatchAnim();
-			}
-			UnselectAllTiles();
-		}
+			UnselectTiles();
 	}
 
-	private bool AreAllSame()
-	{
-		string tileId = "";
-		foreach (Tile t in _selectedTiles)
-		{
-			if (tileId == "")
-				tileId = t.TileId;
-			else if (tileId != t.TileId)
-				return false;
-		}
-
-		return true;
-	}
-
-	private void UnselectAllTiles()
+	private void UnselectTiles()
 	{
 		foreach (Tile t in _selectedTiles)
 		{
-			t.SpriteRenderer.color = t.Unselected;
+			t.WrongMatchAnim();
+			t.Selected(false);
 		}
 		_selectedTiles.Clear();
 	}

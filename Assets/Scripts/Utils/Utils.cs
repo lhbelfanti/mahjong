@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using UnityEngine;
 
 public static class Utils
 {
@@ -19,5 +20,12 @@ public static class Utils
 			list[k] = list[n];
 			list[n] = value;
 		}
+	}
+
+	public static void ToInts(this Vector3 v, out int x, out int y, out int z)
+	{
+		x = (int) v.x;
+		y = (int) v.y;
+		z = (int) v.z;
 	}
 }
