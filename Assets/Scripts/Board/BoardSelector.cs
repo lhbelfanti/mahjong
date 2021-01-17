@@ -18,8 +18,8 @@ public class BoardSelector : MonoBehaviour
 	{
 		if (Input.GetMouseButtonDown(0))
 		{
-			RaycastHit2D hit = Physics2D.Raycast(_camera.ScreenToWorldPoint(Input.mousePosition), Vector2.up);
-			if (hit.collider)
+			Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
+			if(Physics.Raycast(ray, out RaycastHit hit))
 			{
 				Tile tile = hit.collider.transform.parent.GetComponent<Tile>();
 				if (_boardMatcher.CanBeSelected(tile))

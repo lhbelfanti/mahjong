@@ -211,7 +211,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1001 &432481872
 PrefabInstance:
@@ -333,8 +333,8 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 10000
-  field of view: 130
-  orthographic: 1
+  field of view: 80
+  orthographic: 0
   orthographic size: 6.5
   m_Depth: -1
   m_CullingMask:
@@ -359,8 +359,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4, y: -5.5, z: -5}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 2}
+  m_LocalPosition: {x: 0, y: 0, z: -5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -393,7 +393,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1881300058
 GameObject:
@@ -427,6 +427,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b38d03313d8584dd7a55e46385363c52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mainCamera: {fileID: 519420031}
+  _fovForHeight: {x: 80, y: 6}
+  _fovGap: 2
+  _boardGameObject: {fileID: 592605297}
 --- !u!4 &1881300060
 Transform:
   m_ObjectHideFlags: 0
@@ -456,7 +460,8 @@ MonoBehaviour:
   _tileGameObject: {fileID: 5943988702286095783, guid: 1ac714296dc904340965688456930bd7,
     type: 3}
   _boardGameObject: {fileID: 592605297}
-  _tileShift: 0.08
+  _tileShift: 0.07
+  _zGap: 0.2
 --- !u!114 &1881300062
 MonoBehaviour:
   m_ObjectHideFlags: 0

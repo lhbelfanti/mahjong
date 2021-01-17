@@ -1,17 +1,28 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using Random = System.Random;
+using Quaternion = UnityEngine.Quaternion;
+using Vector3 = UnityEngine.Vector3;
 
 public class BoardCreator : MonoBehaviour
 {
 	[SerializeField] private Tile _tileGameObject;
 	[SerializeField] private Transform _boardGameObject;
 	[SerializeField] private float _tileShift;
+	[SerializeField] private float _zGap;
 
+	private BoardInfo _boardInfo;
+	private BoardImages _boardImages;
 	private Tile[,,] _boardTiles;
 	private GameObject[] _floors;
-	private Vector3 _boardSize;
+	private Vector2 _middleTilePos;
+	private Tile _middleTile;
+
+	private void Awake()
+	{
+		_boardInfo = new BoardInfo();
+		_boardImages = new BoardImages();
+	}
 
 	public void CreateBoard(int levelId)
 	{
@@ -19,12 +30,12 @@ public class BoardCreator : MonoBehaviour
 		LevelData levelData = JsonUtility.FromJson<LevelData>(levelJson.text);
 		List<LevelInfo> levelInfo = levelData.data;
 
-		GetBoardSpecs(levelInfo, out int tilesCount, out _boardSize);
-		List<Sprite> images = GetImages(tilesCount);
+		_boardInfo.GetBoardSpecs(levelInfo, out int tilesCount);
+		List<Sprite> images = _boardImages.GetImages(tilesCount);
 
-		_boardTiles = new Tile[(int) _boardSize.x, (int) _boardSize.y, (int) _boardSize.z];
-		_floors = new GameObject[(int) _boardSize.z];
-
+		_boardTiles = new Tile[(int) BoardSize.x, (int) BoardSize.y, (int) BoardSize.z];
+		_floors = new GameObject[(int) BoardSize.z];
+		_middleTilePos = new Vector2((int) Math.Floor(BoardSize.x / 2), (int) Math.Floor(BoardSize.y / 2));
 
 		for (int i = 0; i < levelInfo.Count; i++)
 		{
@@ -38,13 +49,13 @@ public class BoardCreator : MonoBehaviour
 					int state = tiles[k];
 					switch (state)
 					{
-						case (int)Tile.States.Empty: // Handling the empty case. Should not create a tile.
+						case (int) Tile.States.Empty: // Handling the empty case. Should not create a tile.
 							_boardTiles[k, j, f] = null;
 							break;
-						case (int)Tile.States.Single: // Handling the basic case
+						case (int) Tile.States.Single: // Handling the basic case
 							_boardTiles[k, j, f] = CreateTile(new Vector3(k, j, f), images);
 							break;
-						case (int)Tile.States.Double: // Handling the case where the tile should be over 2 other tiles (in the middle)
+						case (int) Tile.States.Double: // Handling the case where the tile should be over 2 other tiles (in the middle)
 						{
 							_boardTiles[k, j, f] = CreateTile(new Vector3(k, j, f), images, Tile.States.Double);
 							_boardTiles[k + 1, j, f] = CreateDummyTile(new Vector3(k + 1, j, f));
@@ -52,70 +63,22 @@ public class BoardCreator : MonoBehaviour
 							break;
 						}
 					}
+
+					if (IsMiddleTile(k, j, f))
+					{
+						if (!_boardTiles[k, j, f])
+							_boardTiles[k, j, f] = CreateTile(new Vector3(k, j, f), images, Tile.States.Single, true);
+
+						_middleTile = _boardTiles[k, j, f];
+					}
 				}
 			}
 		}
 	}
 
-	private void GetBoardSpecs(List<LevelInfo> levelInfo, out int tilesCount, out Vector3 boardSize)
-	{
-		int tc = 0;
-		int rows = 0;
-		int cols = 0;
-		int floors = 0;
-		for (int i = 0; i < levelInfo.Count; i++)
-		{
-			List<LevelTiles> levelTiles = levelInfo[i].rows;
-			for (int j = 0; j < levelTiles.Count; j++)
-			{
-				List<int> tiles = levelTiles[j].tiles;
-				for (int k = 0; k < tiles.Count; k++)
-				{
-					if (tiles[k] != 0)
-						tc++;
-				}
 
-				if (rows < tiles.Count)
-					rows = tiles.Count;
-			}
 
-			if (cols < levelTiles.Count)
-				cols = levelTiles.Count;
-
-			floors++;
-		}
-
-		tilesCount = tc;
-		boardSize = new Vector3(rows, cols, floors);
-	}
-
-	private List<Sprite> GetImages(int tilesCount)
-	{
-		Sprite[] images = Resources.LoadAll<Sprite>("Images/Tiles/");
-		List<Sprite> sprites = images.ToList();
-		Random rnd = new Random();
-
-		int pairs = tilesCount / 2;
-		while (pairs > sprites.Count)
-		{
-			int pos = rnd.Next(0, sprites.Count - 1);
-			sprites.Add(sprites[pos]);
-		}
-
-		List<Sprite> totalTiles = new List<Sprite>();
-
-		for (int i = 0; i < pairs; i++)
-		{
-			int pos = rnd.Next(0, sprites.Count - 1);
-			totalTiles.Add(sprites[pos]);
-			totalTiles.Add(sprites[pos]);
-			sprites.RemoveAt(pos);
-		}
-		totalTiles.Shuffle();
-		return totalTiles;
-	}
-
-	private Tile CreateTile(Vector3 index, List<Sprite> images, Tile.States state = Tile.States.Single)
+	private Tile CreateTile(Vector3 index, List<Sprite> images, Tile.States state = Tile.States.Single, bool fakeMiddle = false)
 	{
 		index.ToInts(out int x, out int y, out int floor);
 		Rect tileRect = _tileGameObject.GetComponent<RectTransform>().rect;
@@ -124,7 +87,7 @@ public class BoardCreator : MonoBehaviour
 		float xPos;
 		if (state == Tile.States.Double)
 		{
-			bool shouldShift = ShouldShiftTile(index, (int) _boardSize.x, out Tile bottomTile);
+			bool shouldShift = ShouldShiftTile(index, (int) BoardSize.x, out Tile bottomTile);
 			xPos = boardPos.x + tileRect.width * x + tileRect.width / 2 -
 			       (shouldShift ? _tileShift * (int) bottomTile.Index.z : 0);
 		}
@@ -133,7 +96,7 @@ public class BoardCreator : MonoBehaviour
 
 		float yPos = boardPos.y - tileRect.height * y + _tileShift * y;
 
-		Tile tile = Instantiate(_tileGameObject, new Vector3(xPos, yPos, -floor), Quaternion.identity);
+		Tile tile = Instantiate(_tileGameObject, new Vector3(xPos, yPos, -floor * _zGap), Quaternion.identity);
 		if (!_floors[floor])
 		{
 			_floors[floor] = new GameObject("Floor " + floor.ToString());
@@ -145,7 +108,14 @@ public class BoardCreator : MonoBehaviour
 		tile.State = state;
 		tile.transform.name = $"({x.ToString()}x{y.ToString()})-{floor.ToString()}-{tile.Id}";
 		tile.SpriteRenderer.sprite = images[0];
-		images.RemoveAt(0);
+
+		if (IsMiddleTile(x, y, floor))
+			tile.transform.name += "--Middle";
+
+		if (fakeMiddle)
+			tile.gameObject.SetActive(false);
+		else
+			images.RemoveAt(0);
 
 		return tile;
 	}
@@ -185,6 +155,15 @@ public class BoardCreator : MonoBehaviour
 		return false;
 	}
 
+	private bool IsMiddleTile(int x, int y, int floor)
+	{
+		int mX = (int) _middleTilePos.x;
+		int mY = (int) _middleTilePos.y;
+
+		return mX == x && mY == y && floor == 0;
+	}
+
 	public Tile[,,] BoardTiles => _boardTiles;
-	public Vector3 BoardSize => _boardSize;
+	public Vector3 BoardSize => _boardInfo.BoardSize;
+	public Tile MiddleTile => _middleTile;
 }
