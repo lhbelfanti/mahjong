@@ -8,7 +8,21 @@ namespace Board
 {
 	public class BoardImages
 	{
-		public List<Sprite> GetImages(int tilesCount)
+		private enum FillMethod
+		{
+			Random = 0,
+			ByFloor = 1
+		}
+
+		private List<Sprite> _tileSprites;
+
+		public BoardImages(int tilesCount)
+		{
+			_tileSprites = new List<Sprite>();
+			LoadImages(tilesCount);
+		}
+
+		private void LoadImages(int tilesCount)
 		{
 			Sprite[] images = Resources.LoadAll<Sprite>("Images/Tiles/");
 			List<Sprite> sprites = images.ToList();
@@ -21,17 +35,84 @@ namespace Board
 				sprites.Add(sprites[pos]);
 			}
 
-			List<Sprite> totalTiles = new List<Sprite>();
-
 			for (int i = 0; i < pairs; i++)
 			{
 				int pos = rnd.Next(0, sprites.Count - 1);
-				totalTiles.Add(sprites[pos]);
-				totalTiles.Add(sprites[pos]);
+				_tileSprites.Add(sprites[pos]);
+				_tileSprites.Add(sprites[pos]);
 				sprites.RemoveAt(pos);
 			}
-			totalTiles.Shuffle();
-			return totalTiles;
+		}
+
+		public void AddImagesToTiles(GameObject[] floors, int fillMethod)
+		{
+			switch (fillMethod)
+			{
+				case (int) FillMethod.Random:
+					FillAllRandom(floors);
+					break;
+				case (int) FillMethod.ByFloor:
+					FillByFloor(floors);
+					break;
+			}
+		}
+
+
+		private void FillAllRandom(GameObject[] floors)
+		{
+			List<Tile.Tile> tiles = new List<Tile.Tile>();
+			foreach (GameObject f in floors)
+			{
+				List<GameObject> children = f.GetChildren();
+				foreach (GameObject c in children)
+				{
+					if (!c.activeSelf)
+						continue;
+
+					Tile.Tile tile = c.GetComponent<Tile.Tile>();
+					if (tile.State == Tile.Tile.States.Single || tile.State == Tile.Tile.States.Double)
+					{
+						tiles.Add(tile);
+					}
+				}
+			}
+
+			FillData(tiles);
+		}
+
+		private void FillByFloor(GameObject[] floors)
+		{
+			foreach (GameObject f in floors)
+			{
+				List<Tile.Tile> tiles = new List<Tile.Tile>();
+				List<GameObject> children = f.GetChildren();
+				foreach (GameObject c in children)
+				{
+					if (!c.activeSelf)
+						continue;
+
+					Tile.Tile tile = c.GetComponent<Tile.Tile>();
+					if (tile.State == Tile.Tile.States.Single || tile.State == Tile.Tile.States.Double)
+					{
+						tiles.Add(tile);
+					}
+				}
+
+				FillData(tiles);
+			}
+		}
+
+		private void FillData(List<Tile.Tile> tiles)
+		{
+			tiles.Shuffle();
+
+			foreach (Tile.Tile tile in tiles)
+			{
+				tile.Id = _tileSprites[0].name;
+				tile.SpriteRenderer.sprite = _tileSprites[0];
+				_tileSprites.RemoveAt(0);
+			}
+
 		}
 	}
 }

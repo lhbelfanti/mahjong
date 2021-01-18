@@ -30,5 +30,15 @@ namespace Utils
 			y = (int) v.y;
 			z = (int) v.z;
 		}
+
+		public static List<GameObject> GetChildren(this GameObject element)
+		{
+			List<GameObject> list = new List<GameObject>();
+			for (int i = 0; i< element.transform.childCount; i++)
+			{
+				list.Add(element.transform.GetChild(i).gameObject);
+			}
+			return list;
+		}
 	}
 }

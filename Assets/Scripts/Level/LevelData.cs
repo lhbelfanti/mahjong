@@ -7,6 +7,7 @@ namespace Level
 	public class LevelData
 	{
 		public int level;
+		public int fillMethod;
 		public List<LevelInfo> data;
 	}
 

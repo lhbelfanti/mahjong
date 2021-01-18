@@ -24,7 +24,6 @@ namespace Board
 			int levelSelected = PlayerPrefs.GetInt("LevelSelected");
 			_boardCreator.CreateBoard(levelSelected);
 			CenterCameraOnBoard();
-
 		}
 
 		private void CenterCameraOnBoard()

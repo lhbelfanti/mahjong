@@ -25,7 +25,6 @@ namespace Board
 		private void Awake()
 		{
 			_boardInfo = new BoardInfo();
-			_boardImages = new BoardImages();
 		}
 
 		public void CreateBoard(int levelId)
@@ -35,7 +34,6 @@ namespace Board
 			List<LevelInfo> levelInfo = levelData.data;
 
 			_boardInfo.GetBoardSpecs(levelInfo, out int tilesCount);
-			List<Sprite> images = _boardImages.GetImages(tilesCount);
 
 			_boardTiles = new Tile.Tile[(int) BoardSize.x, (int) BoardSize.y, (int) BoardSize.z];
 			_floors = new GameObject[(int) BoardSize.z];
@@ -57,11 +55,11 @@ namespace Board
 								_boardTiles[k, j, f] = null;
 								break;
 							case (int) Tile.Tile.States.Single: // Handling the basic case
-								_boardTiles[k, j, f] = CreateTile(new Vector3(k, j, f), images);
+								_boardTiles[k, j, f] = CreateTile(new Vector3(k, j, f));
 								break;
 							case (int) Tile.Tile.States.Double: // Handling the case where the tile should be over 2 other tiles (in the middle)
 							{
-								_boardTiles[k, j, f] = CreateTile(new Vector3(k, j, f), images, Tile.Tile.States.Double);
+								_boardTiles[k, j, f] = CreateTile(new Vector3(k, j, f), Tile.Tile.States.Double);
 								_boardTiles[k + 1, j, f] = CreateDummyTile(new Vector3(k + 1, j, f));
 								k++;
 								break;
@@ -72,8 +70,9 @@ namespace Board
 						{
 							Tile.Tile middleTile = _boardTiles[k, j, f];
 							if (!middleTile)
-								_boardTiles[k, j, f] = CreateTile(new Vector3(k, j, f), images, Tile.Tile.States.Single, true);
+								_boardTiles[k, j, f] = CreateTile(new Vector3(k, j, f), Tile.Tile.States.Single, true);
 
+							middleTile = _boardTiles[k, j, f];
 							if (middleTile.State == Tile.Tile.States.Dummy)
 								_middleTile = _boardTiles[k - 1, j, f];
 							else
@@ -83,10 +82,13 @@ namespace Board
 				}
 			}
 
+			_boardImages = new BoardImages(tilesCount);
+			_boardImages.AddImagesToTiles(_floors, levelData.fillMethod);
+
 			GetComponent<BoardMatcher>().GetAvailableMoves();
 		}
 
-		private Tile.Tile CreateTile(Vector3 index, List<Sprite> images, Tile.Tile.States state = Tile.Tile.States.Single, bool fakeMiddle = false)
+		private Tile.Tile CreateTile(Vector3 index, Tile.Tile.States state = Tile.Tile.States.Single, bool fakeMiddle = false)
 		{
 			index.ToInts(out int x, out int y, out int floor);
 			Rect tileRect = tileGameObject.GetComponent<RectTransform>().rect;
@@ -111,19 +113,15 @@ namespace Board
 				_floors[floor].transform.SetParent(boardGameObject);
 			}
 			tile.transform.SetParent(_floors[floor].transform);
-			tile.Id = images[0].name;
 			tile.Index = index;
 			tile.State = state;
 			tile.transform.name = $"({x.ToString()}x{y.ToString()})-{floor.ToString()}-{tile.Id}";
-			tile.SpriteRenderer.sprite = images[0];
 
 			if (IsMiddleTile(x, y, floor))
 				tile.transform.name += "--Middle";
 
 			if (fakeMiddle)
 				tile.gameObject.SetActive(false);
-			else
-				images.RemoveAt(0);
 
 			return tile;
 		}
