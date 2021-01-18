@@ -106,7 +106,7 @@ namespace Board
 			Tile.Tile[,,] boardTiles = _boardCreator.BoardTiles;
 			foreach (Tile.Tile tile in boardTiles)
 			{
-				if (tile != null)
+				if (tile)
 					return false;
 			}
 
