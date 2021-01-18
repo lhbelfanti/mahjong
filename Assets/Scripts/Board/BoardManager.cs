@@ -43,5 +43,6 @@ public class BoardManager : MonoBehaviour
 		int newFov = fov - (fov - boardSizeY * fov / boardHeight) / 2;
 		_mainCamera.fieldOfView = newFov + _fovGap;
 
+		_boardCreator.RemoveMiddleTile();
 	}
 }

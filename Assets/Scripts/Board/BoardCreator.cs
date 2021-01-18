@@ -76,8 +76,6 @@ public class BoardCreator : MonoBehaviour
 		}
 	}
 
-
-
 	private Tile CreateTile(Vector3 index, List<Sprite> images, Tile.States state = Tile.States.Single, bool fakeMiddle = false)
 	{
 		index.ToInts(out int x, out int y, out int floor);
@@ -130,6 +128,17 @@ public class BoardCreator : MonoBehaviour
 		dummyTile.State = Tile.States.Dummy;
 		dummyTile.transform.SetParent(_floors[f].transform);
 		return dummyTile;
+	}
+
+	public void RemoveMiddleTile()
+	{
+		if (!_middleTile.gameObject.activeSelf)
+		{
+			Vector3 index = _middleTile.Index;
+			index.ToInts(out int x, out int y, out int f);
+			_boardTiles[x, y, f] = null;
+			Destroy(_middleTile.gameObject);
+		}
 	}
 
 	private bool ShouldShiftTile(Vector3 index, int boardSize, out Tile bottomTile)
