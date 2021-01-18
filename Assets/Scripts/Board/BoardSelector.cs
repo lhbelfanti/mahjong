@@ -32,6 +32,8 @@ public class BoardSelector : MonoBehaviour
 				}
 			}
 		}
+
+
 	}
 
 	private void SelectTile(Tile tile)
