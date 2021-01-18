@@ -2382,7 +2382,7 @@ GameObject:
   - component: {fileID: 1881300062}
   - component: {fileID: 1881300063}
   m_Layer: 0
-  m_Name: ' '
+  m_Name: BoardManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2461,6 +2461,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4ccb184e57124716a6c03ce0f14a8dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 1026691588}
 --- !u!1 &1957101660
 GameObject:
   m_ObjectHideFlags: 0

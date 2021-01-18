@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game;
 using UnityEngine;
 using Utils;
 
@@ -6,6 +7,8 @@ namespace Board
 {
 	public class BoardMatcher : MonoBehaviour
 	{
+		[SerializeField] private GameManager gameManager;
+
 		private BoardCreator _boardCreator;
 		private BoardSelector _boardSelector;
 
@@ -65,6 +68,46 @@ namespace Board
 				boardTiles[x, y, z] = null;
 				if (tile.State == Tile.Tile.States.Double) // Removing the dummy tile
 					boardTiles[x + 1, y, z] = null;
+			}
+
+			if (LevelWon())
+				gameManager.SwitchGameState(GameManager.GameState.Win);
+			else if (LevelLose())
+				gameManager.SwitchGameState(GameManager.GameState.Lose);
+
+			return true;
+		}
+
+		private bool LevelLose()
+		{
+			List<Tile.Tile> availableMoves = new List<Tile.Tile>();
+			Tile.Tile[,,] boardTiles = _boardCreator.BoardTiles;
+			foreach (Tile.Tile tile in boardTiles)
+			{
+				if (tile && tile.State != Tile.Tile.States.Dummy && CanBeSelected(tile))
+					availableMoves.Add(tile);
+			}
+
+			for (int i = 0; i < availableMoves.Count; i++)
+			{
+				string currentTile = availableMoves[i].Id;
+				for (int j = i + 1; j < availableMoves.Count; j++)
+				{
+					if (currentTile == availableMoves[j].Id)
+						return false;
+				}
+			}
+
+			return true;
+		}
+
+		private bool LevelWon()
+		{
+			Tile.Tile[,,] boardTiles = _boardCreator.BoardTiles;
+			foreach (Tile.Tile tile in boardTiles)
+			{
+				if (tile != null)
+					return false;
 			}
 
 			return true;
