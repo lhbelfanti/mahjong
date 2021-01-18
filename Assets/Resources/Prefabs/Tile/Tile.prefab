@@ -151,9 +151,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31ce794fc06524bfe85b3b9fcd2a1f9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _selected: {r: 0, g: 0.8980392, b: 0.011764706, a: 1}
-  _unselected: {r: 1, g: 1, b: 1, a: 1}
-  _sprite: {fileID: 6958049435644099726}
+  selected: {r: 0.41037738, g: 0.78170234, b: 1, a: 1}
+  unselected: {r: 1, g: 1, b: 1, a: 1}
+  sprite: {fileID: 6958049435644099726}
 --- !u!95 &882806126407826419
 Animator:
   serializedVersion: 3

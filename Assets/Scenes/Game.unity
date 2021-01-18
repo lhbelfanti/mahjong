@@ -381,7 +381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97e0a28ead2c5460b97fd3fa02c3251a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneFader: {fileID: 1715031460}
+  sceneFader: {fileID: 1715031460}
 --- !u!1 &169429977
 GameObject:
   m_ObjectHideFlags: 0
@@ -1490,8 +1490,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 170c30e849b104cabbca4f1fbf8fb020, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameOverUI: {fileID: 0}
-  winUI: {fileID: 0}
+  gameOverUI: {fileID: 423239700}
+  winUI: {fileID: 657465868}
 --- !u!4 &1026691589
 Transform:
   m_ObjectHideFlags: 0
@@ -2382,7 +2382,7 @@ GameObject:
   - component: {fileID: 1881300062}
   - component: {fileID: 1881300063}
   m_Layer: 0
-  m_Name: BoardManager
+  m_Name: ' '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2400,10 +2400,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b38d03313d8584dd7a55e46385363c52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mainCamera: {fileID: 519420031}
-  _fovForHeight: {x: 80, y: 6}
-  _fovGap: 2
-  _boardGameObject: {fileID: 592605297}
+  mainCamera: {fileID: 519420031}
+  fovForHeight: {x: 80, y: 6}
+  fovGap: 2
+  boardGameObject: {fileID: 592605297}
 --- !u!4 &1881300060
 Transform:
   m_ObjectHideFlags: 0
@@ -2430,11 +2430,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f250772c22bbe49deb5af8c31b0217c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tileGameObject: {fileID: 5943988702286095783, guid: 1ac714296dc904340965688456930bd7,
+  tileGameObject: {fileID: 5943988702286095783, guid: 1ac714296dc904340965688456930bd7,
     type: 3}
-  _boardGameObject: {fileID: 592605297}
-  _tileShift: 0.07
-  _zGap: 0.2
+  boardGameObject: {fileID: 592605297}
+  tileShift: 0.07
+  zGap: 0.02
 --- !u!114 &1881300062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2447,8 +2447,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40beff694610d44caa35747b0109ba13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _camera: {fileID: 519420031}
-  _matchNumber: 2
+  mainCamera: {fileID: 519420031}
+  matchNumber: 2
 --- !u!114 &1881300063
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1661,7 +1661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3caa9cfcddf444865a3c52be29dde0a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioMixer: {fileID: 24100000, guid: 8978689bd9b1c4f0eb5762d4846802f6, type: 2}
+  audioMixer: {fileID: 24100000, guid: 8978689bd9b1c4f0eb5762d4846802f6, type: 2}
 --- !u!1 &1197379963
 GameObject:
   m_ObjectHideFlags: 0
@@ -2081,12 +2081,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b37f47b653ce54bafa6623b9b4b2e4dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _levelButton: {fileID: 4534997330700852549, guid: d85e702511c3744229704b7e27950e6a,
+  levelButton: {fileID: 4534997330700852549, guid: d85e702511c3744229704b7e27950e6a,
     type: 3}
-  _lockedLevelButton: {fileID: 8052367854044751289, guid: 26ee27b63e301460cb0077abc26c841a,
+  lockedLevelButton: {fileID: 8052367854044751289, guid: 26ee27b63e301460cb0077abc26c841a,
     type: 3}
-  _levelsContainer: {fileID: 1654322831}
-  _sceneFader: {fileID: 614456161}
+  sceneFader: {fileID: 614456161}
 --- !u!114 &1654322834
 MonoBehaviour:
   m_ObjectHideFlags: 0

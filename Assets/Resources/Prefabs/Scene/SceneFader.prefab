@@ -118,8 +118,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c277b987422f43d98b70050dda1d008, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _img: {fileID: 1303028961156804253}
-  _animationCurve:
+  img: {fileID: 1303028961156804253}
+  animationCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3

@@ -1,48 +1,50 @@
 ﻿using UnityEngine;
 
-public class BoardManager : MonoBehaviour
+namespace Board
 {
-	[SerializeField] private Camera _mainCamera;
-	[SerializeField] private Vector2 _fovForHeight;
-	[SerializeField] private int _fovGap;
-	[SerializeField] private Transform _boardGameObject;
-
-	private BoardCreator _boardCreator;
-	private BoardSelector _boardSelector;
-
-
-	private void Awake()
+	public class BoardManager : MonoBehaviour
 	{
-		_boardCreator = GetComponent<BoardCreator>();
-	}
+		[SerializeField] private Camera mainCamera;
+		[SerializeField] private Vector2 fovForHeight;
+		[SerializeField] private int fovGap;
+		[SerializeField] private Transform boardGameObject;
 
-	private void Start()
-	{
-		int levelSelected = PlayerPrefs.GetInt("LevelSelected");
-		_boardCreator.CreateBoard(levelSelected);
-		CenterCameraOnBoard();
-	}
+		private BoardCreator _boardCreator;
+		private BoardSelector _boardSelector;
 
-	private void CenterCameraOnBoard()
-	{
-		Transform cameraTransform = _mainCamera.transform;
-		Vector3 boardPosition = _boardGameObject.position;
-		cameraTransform.position = new Vector3(boardPosition.x, boardPosition.y, cameraTransform.position.z);
-		_mainCamera.transform.LookAt(_boardGameObject, Vector3.forward);
+		private void Awake()
+		{
+			_boardCreator = GetComponent<BoardCreator>();
+		}
 
-		int boardSizeY = (int) _boardCreator.BoardSize.y;
-		Tile t = _boardCreator.MiddleTile;
-		Rect tileRect = t.GetComponent<RectTransform>().rect;
-		Vector3 tilePos = t.transform.position;
-		float newBoardPosX = tilePos.x;
-		float newBoardPosY = tilePos.y + (boardSizeY % 2 == 0 ? tileRect.height / 2 : 0);
-		_boardGameObject.position = new Vector3(-newBoardPosX, -newBoardPosY, boardPosition.z);
+		private void Start()
+		{
+			int levelSelected = PlayerPrefs.GetInt("LevelSelected");
+			_boardCreator.CreateBoard(levelSelected);
+			CenterCameraOnBoard();
+		}
 
-		int fov = (int) _fovForHeight.x;
-		int boardHeight = (int) _fovForHeight.y;
-		int newFov = fov - (fov - boardSizeY * fov / boardHeight) / 2;
-		_mainCamera.fieldOfView = newFov + _fovGap;
+		private void CenterCameraOnBoard()
+		{
+			Transform cameraTransform = mainCamera.transform;
+			Vector3 boardPosition = boardGameObject.position;
+			cameraTransform.position = new Vector3(boardPosition.x, boardPosition.y, cameraTransform.position.z);
+			mainCamera.transform.LookAt(boardGameObject, Vector3.forward);
 
-		_boardCreator.RemoveMiddleTile();
+			int boardSizeY = (int) _boardCreator.BoardSize.y;
+			Tile.Tile t = _boardCreator.MiddleTile;
+			Rect tileRect = t.GetComponent<RectTransform>().rect;
+			Vector3 tilePos = t.transform.position;
+			float newBoardPosX = tilePos.x;
+			float newBoardPosY = tilePos.y + (boardSizeY % 2 == 0 ? tileRect.height / 2 : 0);
+			boardGameObject.position = new Vector3(-newBoardPosX, -newBoardPosY, boardPosition.z);
+
+			int fov = (int) fovForHeight.x;
+			int boardHeight = (int) fovForHeight.y;
+			int newFov = fov - (fov - boardSizeY * fov / boardHeight) / 2;
+			mainCamera.fieldOfView = newFov + fovGap;
+
+			_boardCreator.RemoveMiddleTile();
+		}
 	}
 }

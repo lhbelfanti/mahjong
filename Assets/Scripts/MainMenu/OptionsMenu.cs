@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.Audio;
 
-public class OptionsMenu : MonoBehaviour
+namespace MainMenu
 {
-	[SerializeField] private AudioMixer _audioMixer;
-
-	public void SetVolume(float volume)
+	public class OptionsMenu : MonoBehaviour
 	{
-		_audioMixer.SetFloat("volume", volume);
+		[SerializeField] private AudioMixer audioMixer;
+
+		public void SetVolume(float volume)
+		{
+			audioMixer.SetFloat("volume", volume);
+		}
 	}
 }

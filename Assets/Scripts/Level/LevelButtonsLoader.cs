@@ -1,16 +1,16 @@
 ﻿using System.IO;
+using Scene;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LevelButtonsLoader : MonoBehaviour
 {
-	[SerializeField] private GameObject _levelButton;
-	[SerializeField] private GameObject _lockedLevelButton;
-	[SerializeField] private GameObject _levelsContainer;
-	[SerializeField] private SceneFader _sceneFader;
+	[SerializeField] private GameObject levelButton;
+	[SerializeField] private GameObject lockedLevelButton;
+	[SerializeField] private SceneFader sceneFader;
 
-	private int _lastUnlockedLevel = 0;
+	private int _lastUnlockedLevel;
 
 	private void Start()
 	{
@@ -33,17 +33,17 @@ public class LevelButtonsLoader : MonoBehaviour
 
 	private void CreateButton(int index, bool locked = false)
 	{
-		GameObject lvlGameObject = !locked ? _levelButton : _lockedLevelButton;
-		GameObject levelButton = Instantiate(lvlGameObject, _levelsContainer.transform, true);
-		levelButton.GetComponentInChildren<TextMeshProUGUI>().text += index.ToString();;
-		levelButton.name = $"Level {index.ToString()}";
+		GameObject lvlGameObject = !locked ? levelButton : lockedLevelButton;
+		GameObject lvlButton = Instantiate(lvlGameObject, gameObject.transform, true);
+		lvlButton.GetComponentInChildren<TextMeshProUGUI>().text += index.ToString();;
+		lvlButton.name = $"Level {index.ToString()}";
 		if (!locked)
-			levelButton.GetComponent<Button>().onClick.AddListener(() => OnLevelButtonClicked(index));
+			lvlButton.GetComponent<Button>().onClick.AddListener(() => OnLevelButtonClicked(index));
 	}
 
 	private void OnLevelButtonClicked(int levelId)
 	{
 		PlayerPrefs.SetInt("LevelSelected", levelId);
-		_sceneFader.FadeTo("Game");
+		sceneFader.FadeTo("Game");
 	}
 }

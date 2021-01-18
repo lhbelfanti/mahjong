@@ -1,24 +1,28 @@
-﻿using UnityEngine;
+﻿using Scene;
+using UnityEngine;
 
-public class WinLoseUIManager : MonoBehaviour
+namespace Game
 {
-	[SerializeField] private SceneFader _sceneFader;
-
-	public void Retry()
+	public class WinLoseUIManager : MonoBehaviour
 	{
-		gameObject.SetActive(false);
-		_sceneFader.FadeTo("Game");
-	}
+		[SerializeField] private SceneFader sceneFader;
 
-	public void Next()
-	{
-		gameObject.SetActive(false);
-		_sceneFader.FadeTo("Game");
-	}
+		public void Retry()
+		{
+			gameObject.SetActive(false);
+			sceneFader.FadeTo("Game");
+		}
 
-	public void Menu()
-	{
-		gameObject.SetActive(false);
-		_sceneFader.FadeTo("Main");
+		public void Next()
+		{
+			gameObject.SetActive(false);
+			sceneFader.FadeTo("Game");
+		}
+
+		public void Menu()
+		{
+			gameObject.SetActive(false);
+			sceneFader.FadeTo("Main");
+		}
 	}
 }
