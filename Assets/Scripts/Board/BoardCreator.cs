@@ -70,14 +70,20 @@ namespace Board
 
 						if (IsMiddleTile(k, j, f))
 						{
-							if (!_boardTiles[k, j, f])
+							Tile.Tile middleTile = _boardTiles[k, j, f];
+							if (!middleTile)
 								_boardTiles[k, j, f] = CreateTile(new Vector3(k, j, f), images, Tile.Tile.States.Single, true);
 
-							_middleTile = _boardTiles[k, j, f];
+							if (middleTile.State == Tile.Tile.States.Dummy)
+								_middleTile = _boardTiles[k - 1, j, f];
+							else
+								_middleTile = _boardTiles[k, j, f];
 						}
 					}
 				}
 			}
+
+			GetComponent<BoardMatcher>().GetAvailableMoves();
 		}
 
 		private Tile.Tile CreateTile(Vector3 index, List<Sprite> images, Tile.Tile.States state = Tile.Tile.States.Single, bool fakeMiddle = false)

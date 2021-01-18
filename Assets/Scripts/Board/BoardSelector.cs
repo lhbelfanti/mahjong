@@ -35,8 +35,6 @@ namespace Board
 					}
 				}
 			}
-
-
 		}
 
 		private void SelectTile(Tile.Tile tile)
@@ -80,6 +78,16 @@ namespace Board
 				t.Selected(false);
 			}
 			_selectedTiles.Clear();
+		}
+
+		public void ShowHint()
+		{
+			List<Tile.Tile> match = _boardMatcher.GetPossibleMatch();
+			if (match.Count > 0)
+			{
+				foreach (Tile.Tile t in match)
+					t.SetHint();
+			}
 		}
 	}
 }

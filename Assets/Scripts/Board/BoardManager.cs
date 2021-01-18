@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Scene;
+using UnityEngine;
 
 namespace Board
 {
@@ -8,6 +9,7 @@ namespace Board
 		[SerializeField] private Vector2 fovForHeight;
 		[SerializeField] private int fovGap;
 		[SerializeField] private Transform boardGameObject;
+		[SerializeField] private AutoAdjustBackground backgroundAdjuster;
 
 		private BoardCreator _boardCreator;
 		private BoardSelector _boardSelector;
@@ -22,6 +24,7 @@ namespace Board
 			int levelSelected = PlayerPrefs.GetInt("LevelSelected");
 			_boardCreator.CreateBoard(levelSelected);
 			CenterCameraOnBoard();
+
 		}
 
 		private void CenterCameraOnBoard()
@@ -45,6 +48,8 @@ namespace Board
 			mainCamera.fieldOfView = newFov + fovGap;
 
 			_boardCreator.RemoveMiddleTile();
+
+			backgroundAdjuster.AdjustBackground();
 		}
 	}
 }

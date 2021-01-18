@@ -6,7 +6,7 @@ namespace Scene
 	{
 		[SerializeField] private Camera mainCamera;
 
-		private void Awake()
+		public void AdjustBackground()
 		{
 			Sprite sprite = GetComponent<SpriteRenderer>().sprite;
 			float spriteHeight = sprite.bounds.size.y;

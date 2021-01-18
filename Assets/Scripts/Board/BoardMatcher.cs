@@ -11,6 +11,7 @@ namespace Board
 
 		private BoardCreator _boardCreator;
 		private BoardSelector _boardSelector;
+		private List<Tile.Tile> _availableMoves;
 
 		private void Awake()
 		{
@@ -79,25 +80,29 @@ namespace Board
 
 		private bool LevelLose()
 		{
-			List<Tile.Tile> availableMoves = new List<Tile.Tile>();
-			Tile.Tile[,,] boardTiles = _boardCreator.BoardTiles;
-			foreach (Tile.Tile tile in boardTiles)
+			GetAvailableMoves();
+			for (int i = 0; i < _availableMoves.Count; i++)
 			{
-				if (tile && tile.State != Tile.Tile.States.Dummy && CanBeSelected(tile))
-					availableMoves.Add(tile);
-			}
-
-			for (int i = 0; i < availableMoves.Count; i++)
-			{
-				string currentTile = availableMoves[i].Id;
-				for (int j = i + 1; j < availableMoves.Count; j++)
+				string currentTile = _availableMoves[i].Id;
+				for (int j = i + 1; j < _availableMoves.Count; j++)
 				{
-					if (currentTile == availableMoves[j].Id)
+					if (currentTile == _availableMoves[j].Id)
 						return false;
 				}
 			}
 
 			return true;
+		}
+
+		public void GetAvailableMoves()
+		{
+			_availableMoves = new List<Tile.Tile>();
+			Tile.Tile[,,] boardTiles = _boardCreator.BoardTiles;
+			foreach (Tile.Tile tile in boardTiles)
+			{
+				if (tile && tile.State != Tile.Tile.States.Dummy && CanBeSelected(tile))
+					_availableMoves.Add(tile);
+			}
 		}
 
 		private bool LevelWon()
@@ -110,6 +115,27 @@ namespace Board
 			}
 
 			return true;
+		}
+
+		public List<Tile.Tile> GetPossibleMatch()
+		{
+			List<Tile.Tile> match = new List<Tile.Tile>();
+
+			for (int i = 0; i < _availableMoves.Count; i++)
+			{
+				string currentTile = _availableMoves[i].Id;
+				for (int j = i + 1; j < _availableMoves.Count; j++)
+				{
+					if (currentTile == _availableMoves[j].Id)
+					{
+						match.Add(_availableMoves[i]);
+						match.Add(_availableMoves[j]);
+						return match;
+					}
+				}
+			}
+
+			return match;
 		}
 	}
 }

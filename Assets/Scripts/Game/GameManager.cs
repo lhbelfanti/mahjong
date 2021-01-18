@@ -41,6 +41,7 @@ namespace Game
 		private void WinLevel()
 		{
 			PlayerPrefs.SetInt("LastUnlockedLevel", PlayerPrefs.GetInt("LastUnlockedLevel", 1) + 1);
+			PlayerPrefs.SetInt("LevelSelected", PlayerPrefs.GetInt("LevelSelected", 1) + 1);
 			winUI.SetActive(true);
 		}
 

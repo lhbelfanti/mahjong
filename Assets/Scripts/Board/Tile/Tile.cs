@@ -14,6 +14,7 @@ namespace Board.Tile
 
 		[SerializeField] private Color selected;
 		[SerializeField] private Color unselected;
+		[SerializeField] private Color hint;
 		[SerializeField] private SpriteRenderer sprite;
 
 		private bool _tileSelected;
@@ -48,6 +49,11 @@ namespace Board.Tile
 		public void Selected(bool value)
 		{
 			sprite.color = value ? selected : unselected;
+		}
+
+		public void SetHint()
+		{
+			sprite.color = hint;
 		}
 
 		public string Id { get; set; }

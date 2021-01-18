@@ -98,7 +98,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 8, y: 12, z: 1}
+  m_Size: {x: 8, y: 12, z: 0.001}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5943988702286095784
 GameObject:
@@ -153,6 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selected: {r: 0.41037738, g: 0.78170234, b: 1, a: 1}
   unselected: {r: 1, g: 1, b: 1, a: 1}
+  hint: {r: 0.2784314, g: 1, b: 0.18431373, a: 1}
   sprite: {fileID: 6958049435644099726}
 --- !u!95 &882806126407826419
 Animator:
