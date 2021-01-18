@@ -14,7 +14,7 @@ public class LevelButtonsLoader : MonoBehaviour
 
 	private void Start()
 	{
-		_lastUnlockedLevel = PlayerPrefs.GetInt("LastUnlockedLevel", 2);
+		_lastUnlockedLevel = PlayerPrefs.GetInt("LastUnlockedLevel", 1);
 		CreateLevelButtons();
 	}
 

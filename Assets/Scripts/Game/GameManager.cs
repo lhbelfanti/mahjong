@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
@@ -39,12 +38,13 @@ public class GameManager : MonoBehaviour
 
 	private void WinLevel()
 	{
-
+		PlayerPrefs.SetInt("LastUnlockedLevel", PlayerPrefs.GetInt("LastUnlockedLevel", 1) + 1);
+		winUI.SetActive(true);
 	}
 
 	private void EndGame()
 	{
-
+		gameOverUI.SetActive(true);
 	}
 
 	public void SwitchGameState(GameState gameState)
