@@ -23,9 +23,8 @@ namespace Board
 
 			GetNeighbours(index, out Tile.Tile top, out Tile.Tile right, out Tile.Tile left);
 
-			if (!top)
-				if (!right || !left || right.State == Tile.Tile.States.Dummy)
-					return true;
+			if (!top && (!right || !left || right.State == Tile.Tile.States.Dummy))
+				return true;
 
 			return false;
 		}
