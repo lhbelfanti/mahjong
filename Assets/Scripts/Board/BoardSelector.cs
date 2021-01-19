@@ -10,11 +10,13 @@ namespace Board
 
 		private List<Tile.Tile> _selectedTiles;
 		private BoardMatcher _boardMatcher;
+		private AudioManager _audioManager;
 
 		private void Awake()
 		{
 			_selectedTiles = new List<Tile.Tile>();
 			_boardMatcher = GetComponent<BoardMatcher>();
+			_audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
 		}
 
 		private void Update()
@@ -40,7 +42,7 @@ namespace Board
 		private void SelectTile(Tile.Tile tile)
 		{
 			if (_selectedTiles.Count == matchNumber && !_selectedTiles.Contains(tile))
-				UnselectTiles();
+				UnselectTiles(false);
 
 			if (!_selectedTiles.Contains(tile))
 			{
@@ -65,23 +67,30 @@ namespace Board
 				{
 					t.MatchAnim();
 				}
+				_audioManager.PlaySound(_audioManager.validMatch);
 			}
 			else
 				UnselectTiles();
 		}
 
-		private void UnselectTiles()
+		private void UnselectTiles(bool playSound = true)
 		{
+
 			foreach (Tile.Tile t in _selectedTiles)
 			{
 				t.WrongMatchAnim();
 				t.Selected(false);
 			}
+
+			if (playSound)
+				_audioManager.PlaySound(_audioManager.wrongMatch);
+
 			_selectedTiles.Clear();
 		}
 
 		public void ShowHint()
 		{
+			_audioManager.PlaySound(_audioManager.buttonClicked);
 			List<Tile.Tile> match = _boardMatcher.GetPossibleMatch();
 			if (match.Count > 0)
 			{

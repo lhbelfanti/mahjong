@@ -14,11 +14,14 @@ namespace Game
 		[SerializeField] private GameObject gameOverUI;
 		[SerializeField] private GameObject winUI;
 
+		private AudioManager _audioManager;
+
 		private GameState _gameState;
 
 		private void Awake()
 		{
 			_gameState = GameState.Default;
+			_audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
 		}
 
 		private void Update()
@@ -40,6 +43,8 @@ namespace Game
 
 		private void WinLevel()
 		{
+			_audioManager.PauseMusic();
+			_audioManager.PlaySound(_audioManager.win);
 			PlayerPrefs.SetInt("LastUnlockedLevel", PlayerPrefs.GetInt("LastUnlockedLevel", 1) + 1);
 			PlayerPrefs.SetInt("LevelSelected", PlayerPrefs.GetInt("LevelSelected", 1) + 1);
 			winUI.SetActive(true);
@@ -47,6 +52,8 @@ namespace Game
 
 		private void EndGame()
 		{
+			_audioManager.PauseMusic();
+			_audioManager.PlaySound(_audioManager.lose);
 			gameOverUI.SetActive(true);
 		}
 
