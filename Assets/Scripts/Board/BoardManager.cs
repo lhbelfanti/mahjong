@@ -12,7 +12,6 @@ namespace Board
 		[SerializeField] private AutoAdjustBackground backgroundAdjuster;
 
 		private BoardCreator _boardCreator;
-		private BoardSelector _boardSelector;
 
 		private void Awake()
 		{
