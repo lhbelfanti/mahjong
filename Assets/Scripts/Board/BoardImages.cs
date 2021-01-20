@@ -109,7 +109,7 @@ namespace Board
 			foreach (Tile.Tile tile in tiles)
 			{
 				tile.Id = _tileSprites[0].name;
-				tile.SpriteRenderer.sprite = _tileSprites[0];
+				tile.SetTexture(_tileSprites[0].texture);
 				_tileSprites.RemoveAt(0);
 			}
 

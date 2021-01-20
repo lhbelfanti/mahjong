@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Audio;
 using UnityEngine;
 
 namespace Board
@@ -26,7 +27,7 @@ namespace Board
 				Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 				if(Physics.Raycast(ray, out RaycastHit hit))
 				{
-					Tile.Tile tile = hit.collider.transform.parent.GetComponent<Tile.Tile>();
+					Tile.Tile tile = hit.collider.GetComponent<Tile.Tile>();
 					if (_boardMatcher.CanBeSelected(tile))
 						SelectTile(tile);
 					else
