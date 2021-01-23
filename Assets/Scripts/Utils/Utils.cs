@@ -31,12 +31,13 @@ namespace Utils
 			z = (int) v.z;
 		}
 
-		public static List<GameObject> GetChildren(this GameObject element)
+		public static List<GameObject> GetActiveChildren(this GameObject element)
 		{
 			List<GameObject> list = new List<GameObject>();
 			for (int i = 0; i< element.transform.childCount; i++)
 			{
-				list.Add(element.transform.GetChild(i).gameObject);
+				if (element.transform.GetChild(i).gameObject.activeSelf)
+					list.Add(element.transform.GetChild(i).gameObject);
 			}
 			return list;
 		}

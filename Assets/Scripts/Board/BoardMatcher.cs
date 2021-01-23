@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Game;
 using UnityEngine;
 using Utils;
+using TileStates = Board.Tile.TileCreator.TileStates;
 
 namespace Board
 {
@@ -24,7 +25,7 @@ namespace Board
 
 			GetNeighbours(index, out Tile.Tile top, out Tile.Tile right, out Tile.Tile left);
 
-			if (!top && (!right || !left || right.State == Tile.Tile.States.Dummy))
+			if (!top && (!right || !left || right.State == TileStates.DummyH))
 				return true;
 
 			return false;
@@ -66,8 +67,10 @@ namespace Board
 			{
 				tile.Index.ToInts(out int x, out int y, out int z);
 				boardTiles[x, y, z] = null;
-				if (tile.State == Tile.Tile.States.Double) // Removing the dummy tile
+				if (tile.State == TileStates.DoubleH) // Removing the dummy tile
 					boardTiles[x + 1, y, z] = null;
+				else if (tile.State == TileStates.DoubleV) // Removing the dummy tile
+					boardTiles[x, y + 1, z] = null;
 			}
 
 			if (LevelWon())
@@ -100,7 +103,7 @@ namespace Board
 			Tile.Tile[,,] boardTiles = _boardCreator.BoardTiles;
 			foreach (Tile.Tile tile in boardTiles)
 			{
-				if (tile && tile.State != Tile.Tile.States.Dummy && CanBeSelected(tile))
+				if (tile && tile.State != TileStates.DummyH && CanBeSelected(tile))
 					_availableMoves.Add(tile);
 			}
 		}

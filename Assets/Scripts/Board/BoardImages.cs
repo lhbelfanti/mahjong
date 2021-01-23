@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Utils;
 using Random = System.Random;
+using TileStates = Board.Tile.TileCreator.TileStates;
 
 namespace Board
 {
@@ -63,14 +64,14 @@ namespace Board
 			List<Tile.Tile> tiles = new List<Tile.Tile>();
 			foreach (GameObject f in floors)
 			{
-				List<GameObject> children = f.GetChildren();
+				List<GameObject> children = f.GetActiveChildren();
 				foreach (GameObject c in children)
 				{
-					if (!c.activeSelf)
-						continue;
 
 					Tile.Tile tile = c.GetComponent<Tile.Tile>();
-					if (tile.State == Tile.Tile.States.Single || tile.State == Tile.Tile.States.Double)
+					if (tile.State == TileStates.Single ||
+					    tile.State == TileStates.DoubleH ||
+					    tile.State == TileStates.DoubleV)
 					{
 						tiles.Add(tile);
 					}
@@ -85,14 +86,13 @@ namespace Board
 			foreach (GameObject f in floors)
 			{
 				List<Tile.Tile> tiles = new List<Tile.Tile>();
-				List<GameObject> children = f.GetChildren();
+				List<GameObject> children = f.GetActiveChildren();
 				foreach (GameObject c in children)
 				{
-					if (!c.activeSelf)
-						continue;
-
 					Tile.Tile tile = c.GetComponent<Tile.Tile>();
-					if (tile.State == Tile.Tile.States.Single || tile.State == Tile.Tile.States.Double)
+					if (tile.State == TileStates.Single ||
+					    tile.State == TileStates.DoubleH ||
+					    tile.State == TileStates.DoubleV)
 					{
 						tiles.Add(tile);
 					}
@@ -109,6 +109,7 @@ namespace Board
 			foreach (Tile.Tile tile in tiles)
 			{
 				tile.Id = _tileSprites[0].name;
+				tile.transform.name += $"-{tile.Id}";
 				tile.SetTexture(_tileSprites[0].texture);
 				_tileSprites.RemoveAt(0);
 			}

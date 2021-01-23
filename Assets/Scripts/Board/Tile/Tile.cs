@@ -1,17 +1,10 @@
 ﻿using UnityEngine;
+using TileStates = Board.Tile.TileCreator.TileStates;
 
 namespace Board.Tile
 {
 	public class Tile : MonoBehaviour
 	{
-		public enum States
-		{
-			Empty = 0,
-			Single = 1,
-			Double = 2,
-			Dummy = 3
-		}
-
 		[SerializeField] private Color selected;
 		[SerializeField] private Color unselected;
 		[SerializeField] private Color hint;
@@ -69,7 +62,7 @@ namespace Board.Tile
 		}
 
 		public string Id { get; set; }
-		public States State { get; set; }
+		public TileStates State { get; set; }
 		public Vector3 Index { get; set; }
 	}
 }

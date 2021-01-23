@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -2615,6 +2615,7 @@ GameObject:
   - component: {fileID: 1881300061}
   - component: {fileID: 1881300062}
   - component: {fileID: 1881300063}
+  - component: {fileID: 1881300064}
   m_Layer: 0
   m_Name: BoardManager
   m_TagString: Untagged
@@ -2697,6 +2698,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 1026691588}
+--- !u!114 &1881300064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1881300058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49530f418ab0b443a9b78e154c89a847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileGameObject: {fileID: 5943988702286095783, guid: 1ac714296dc904340965688456930bd7,
+    type: 3}
+  boardGameObject: {fileID: 592605297}
+  tileShift: 0.07
+  zGap: 0.02
 --- !u!1 &1916720788
 GameObject:
   m_ObjectHideFlags: 0

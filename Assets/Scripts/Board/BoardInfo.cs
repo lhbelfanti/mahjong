@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Level;
 using UnityEngine;
+using TileStates = Board.Tile.TileCreator.TileStates;
 
 namespace Board
 {
@@ -13,6 +14,7 @@ namespace Board
 			int rows = 0;
 			int cols = 0;
 			int floors = 0;
+			int vertical = 0;
 			for (int i = 0; i < levelInfo.Count; i++)
 			{
 				List<LevelTiles> levelTiles = levelInfo[i].rows;
@@ -21,11 +23,21 @@ namespace Board
 					List<int> tiles = levelTiles[j].tiles;
 					for (int k = 0; k < tiles.Count; k++)
 					{
-						if (tiles[k] != (int) Tile.Tile.States.Empty)
+						if (tiles[k] != (int) TileStates.Empty)
 							tc++;
 
-						if (tiles[k] == (int) Tile.Tile.States.Double)
+						if (tiles[k] == (int) TileStates.DoubleH)
 							k++;
+
+						if (tiles[k] == (int) TileStates.DoubleV && vertical == 0)
+						{
+							vertical++;
+							tc++;
+						}
+						else if (tiles[k] == (int) TileStates.DoubleV && vertical != 0)
+						{
+							vertical--;
+						}
 					}
 
 					if (rows < tiles.Count)
