@@ -25,10 +25,10 @@ namespace Audio
 
 		private void Awake()
 		{
-			SetMusicVolume(GetMusicVolume());
 			SetFXVolume(GetFXVolume());
 			_musicAudioSource = gameObject.GetComponent<AudioSource>();
 			_musicAudioSource.clip = music;
+			SetMusicVolume(GetMusicVolume());
 			_musicAudioSource.Play();
 		}
 
