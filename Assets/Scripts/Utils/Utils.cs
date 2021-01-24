@@ -36,8 +36,9 @@ namespace Utils
 			List<GameObject> list = new List<GameObject>();
 			for (int i = 0; i< element.transform.childCount; i++)
 			{
-				if (element.transform.GetChild(i).gameObject.activeSelf)
-					list.Add(element.transform.GetChild(i).gameObject);
+				GameObject child = element.transform.GetChild(i).gameObject;
+				if (child.activeSelf)
+					list.Add(child);
 			}
 			return list;
 		}
