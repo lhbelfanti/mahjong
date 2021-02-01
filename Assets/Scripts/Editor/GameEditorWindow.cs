@@ -11,9 +11,15 @@ namespace Editor
 		private FloorEditor _floorEditor;
 		private TileEditor _tileEditor;
 
-		// Board Specifications
+		// Board
 		private int _boardWidth;
 		private int _boardHeight;
+
+		// Floors
+		private bool[] _floorsToggle;
+		private int _prevFloorsQuantity;
+		private bool[] _activeFloors;
+		private int _deletedFloor = -1;
 
 
 		// Visual stuff
@@ -21,9 +27,6 @@ namespace Editor
 		private bool _showBoardMenu = true;
 		private bool _showFloorsMenu = true;
 		private bool _showTilesMenu = true;
-		private bool[] _floorsToggle;
-		private int _prevFloorsQuantity;
-		private int _selectedFloor = -1;
 
 
 		[MenuItem("Window/GameEditor")]
@@ -108,7 +111,8 @@ namespace Editor
 				if (GUILayout.Button("Add Floor"))
 				{
 					_floorEditor.AddNewFloor();
-					_selectedFloor = _selectedFloor == -1 ? _floorEditor.FloorsQuantity - 1 : _selectedFloor;
+					_floorEditor.SelectedFloor = _floorEditor.SelectedFloor == -1 ?
+						_floorEditor.FloorsQuantity - 1 : _floorEditor.SelectedFloor;
 				}
 
 				EditorGUILayout.Separator();
@@ -116,6 +120,24 @@ namespace Editor
 				if (_prevFloorsQuantity != _floorEditor.FloorsQuantity)
 				{
 					_floorsToggle = new bool[_floorEditor.FloorsQuantity];
+					if (_activeFloors.Length > 0)
+					{
+						bool[] prevActiveFloors = _activeFloors;
+						_activeFloors = new bool[_floorEditor.FloorsQuantity];
+						int c = 0;
+						for (int p = 0; p < prevActiveFloors.Length; p++)
+						{
+							if (p == _deletedFloor)
+								continue;
+							_activeFloors[c] = prevActiveFloors[p];
+							c++;
+						}
+
+						_deletedFloor = -1;
+					}
+					else
+						_activeFloors = new bool[_floorEditor.FloorsQuantity];
+
 					_prevFloorsQuantity = _floorEditor.FloorsQuantity;
 				}
 
@@ -126,17 +148,22 @@ namespace Editor
 					if (_floorsToggle[i])
 						UnselectFloors(i);
 
+					_activeFloors[i] = GUILayout.Toggle(_activeFloors[i], $"Active");
+					SelectFloor(i);
+
 					if (GUILayout.Button("Remove"))
 					{
 						_floorEditor.RemoveFloor(i);
-						_selectedFloor = _selectedFloor == i ? -1 : _selectedFloor;
+						_floorEditor.SelectedFloor = _floorEditor.SelectedFloor == i ? -1 : _floorEditor.SelectedFloor;
+						_deletedFloor = i;
 					}
 
 					EditorGUILayout.EndHorizontal();
 				}
 
-				if (_selectedFloor >= 0 && _selectedFloor < _floorsToggle.Length)
-					_floorsToggle[_selectedFloor] = true;
+				if (_floorEditor.SelectedFloor >= 0 && _floorEditor.SelectedFloor < _floorsToggle.Length)
+					_floorsToggle[_floorEditor.SelectedFloor] = true;
+
 			}
 		}
 
@@ -149,7 +176,12 @@ namespace Editor
 				_floorsToggle[i] = false;
 			}
 
-			_selectedFloor = current;
+			_floorEditor.SelectedFloor = current;
+		}
+
+		private void SelectFloor(int floorIndex)
+		{
+			_floorEditor.SelectFloor(floorIndex, _activeFloors[floorIndex]);
 		}
 
 		private void TilesMenu()

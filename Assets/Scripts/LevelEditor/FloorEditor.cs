@@ -6,7 +6,7 @@ namespace LevelEditor
 	{
 		[SerializeField] private Transform floorsContainer;
 
-		private int _floorsQuantity = 0;
+		private int _floorsQuantity;
 
 		public void AddNewFloor()
 		{
@@ -32,6 +32,14 @@ namespace LevelEditor
 			_floorsQuantity--;
 		}
 
+		public void SelectFloor(int floorIndex, bool value)
+		{
+			Transform floor = floorsContainer.Find($"Floor {floorIndex.ToString()}");
+			floor.gameObject.SetActive(value);
+		}
+
 		public int FloorsQuantity => _floorsQuantity;
+
+		public int SelectedFloor { get; set; } = -1;
 	}
 }
