@@ -1,6 +1,7 @@
 ﻿using LevelEditor;
 using UnityEditor;
 using UnityEngine;
+using Utils;
 
 namespace Editor
 {
@@ -124,6 +125,7 @@ namespace Editor
 					{
 						bool[] prevActiveFloors = _activeFloors;
 						_activeFloors = new bool[_floorEditor.FloorsQuantity];
+						_activeFloors.Init(true);
 						int c = 0;
 						for (int p = 0; p < prevActiveFloors.Length; p++)
 						{
@@ -136,7 +138,10 @@ namespace Editor
 						_deletedFloor = -1;
 					}
 					else
+					{
 						_activeFloors = new bool[_floorEditor.FloorsQuantity];
+						_activeFloors.Init(true);
+					}
 
 					_prevFloorsQuantity = _floorEditor.FloorsQuantity;
 				}
@@ -193,22 +198,22 @@ namespace Editor
 			{
 				EditorGUILayout.BeginHorizontal();
 				if (GUILayout.Button("Normal"))
-					CreateTile(0, 1);
+					CreateTile(1);
 
 				if (GUILayout.Button("Double Horizontal"))
-					CreateTile(1, 2);
+					CreateTile(2);
 
 
 				if (GUILayout.Button("Double Vertical"))
-					CreateTile(2, 4);
+					CreateTile(4);
 
 				EditorGUILayout.EndHorizontal();
 			}
 		}
 
-		private void CreateTile(int index, int id)
+		private void CreateTile(int id)
 		{
-			_tileEditor.CreateTile(id);
+			_tileEditor.CreateTile(id, _floorEditor.SelectedFloor);
 		}
 	}
 }
