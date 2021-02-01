@@ -213,7 +213,7 @@ namespace Editor
 
 		private void CreateTile(int id)
 		{
-			_tileEditor.CreateTile(id, _floorEditor.SelectedFloor);
+			_tileEditor.CreateTile(id, _floorEditor.SelectedFloor, new Vector2(_boardWidth, _boardHeight));
 		}
 	}
 }

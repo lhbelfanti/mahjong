@@ -101,6 +101,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 695be0d4d5abc4790be3a5389bd7c913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridCell: {fileID: 6360287843960866523, guid: 229f317d86eb749f7aa36c82e277a2ec,
+    type: 3}
 --- !u!1001 &3977342491866978266
 PrefabInstance:
   m_ObjectHideFlags: 0

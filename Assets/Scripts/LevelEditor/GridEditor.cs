@@ -7,7 +7,7 @@ namespace LevelEditor
 		[SerializeField] private GameObject gridCell;
 		[SerializeField] private Transform grid;
 
-		private readonly float _gap = 0.1f;
+		public static readonly float Gap = 0.1f;
 
 		public void CreateGrid(int width, int height)
 		{
@@ -19,7 +19,7 @@ namespace LevelEditor
 				{
 					Rect boardRect = gridCell.GetComponent<RectTransform>().rect;
 					GameObject cell = Instantiate(gridCell,
-						new Vector3(i * (boardRect.width + _gap), j * (-boardRect.height - _gap), 0),
+						new Vector3(i * (boardRect.width + Gap), j * (-boardRect.height - Gap), 0),
 						gridCell.transform.rotation);
 					cell.transform.SetParent(grid);
 					cell.name = $"{i.ToString()}x{j.ToString()}";
