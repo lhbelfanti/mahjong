@@ -8,13 +8,18 @@ namespace LevelEditor
 		[SerializeField] private RectTransform gridCell;
 
 		private TileCreator.TileStates _tileState;
+
 		private Vector2 _boardSize;
 		private Vector2[] _widthBound;
 		private Vector2[] _heightBound;
 		private bool _boundsSet;
 
+		private Renamer _renamer;
+		private int _xIndex;
+		private int _yIndex;
+
 		private int _smoothCounter;
-		private const int Smooth = 15;
+		private const int Smooth = 10;
 
 		private void OnDrawGizmos()
 		{
@@ -69,6 +74,7 @@ namespace LevelEditor
 		{
 			float xPos = RoundX(pos.x);
 			float yPos = RoundY(pos.y);
+			_renamer.Rename(_tileState, _xIndex, _yIndex);
 			return new Vector3(xPos, yPos, pos.z);
 		}
 
@@ -76,9 +82,15 @@ namespace LevelEditor
 		{
 			float xPos = x;
 			if (xPos < _widthBound[0].x)
+			{
 				xPos = _widthBound[0].x;
+				_xIndex = 0;
+			}
 			else if (xPos > _widthBound[_widthBound.Length - 1].x)
+			{
 				xPos = _widthBound[_widthBound.Length - 1].x;
+				_xIndex = _widthBound.Length - 1;
+			}
 
 			if (xPos == x)
 			{
@@ -86,7 +98,11 @@ namespace LevelEditor
 				{
 					Vector2 value = _widthBound[i];
 					if (xPos > value.x && xPos < value.y)
+					{
 						xPos = value.x;
+						_xIndex = i;
+						break;
+					}
 				}
 			}
 			return xPos;
@@ -96,9 +112,15 @@ namespace LevelEditor
 		{
 			float yPos = y;
 			if (yPos > _heightBound[0].x)
+			{
 				yPos = _heightBound[0].x;
+				_yIndex = 0;
+			}
 			else if (yPos < _heightBound[_heightBound.Length - 1].x)
+			{
 				yPos = _heightBound[_heightBound.Length - 1].x;
+				_yIndex = _heightBound.Length - 1;
+			}
 
 			if (yPos == y)
 			{
@@ -106,7 +128,11 @@ namespace LevelEditor
 				{
 					Vector2 value = _heightBound[i];
 					if (yPos < value.x && yPos > value.y)
+					{
 						yPos = value.x;
+						_yIndex = i;
+						break;
+					}
 				}
 			}
 			return yPos;
@@ -115,6 +141,11 @@ namespace LevelEditor
 		public TileCreator.TileStates TileState
 		{
 			set => _tileState = value;
+		}
+
+		public Renamer Renamer
+		{
+			set => _renamer = value;
 		}
 
 		public void BoardSize(Vector2 value)
