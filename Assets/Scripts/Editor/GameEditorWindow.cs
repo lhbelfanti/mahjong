@@ -121,7 +121,7 @@ namespace Editor
 				if (_prevFloorsQuantity != _floorEditor.FloorsQuantity)
 				{
 					_floorsToggle = new bool[_floorEditor.FloorsQuantity];
-					if (_activeFloors.Length > 0)
+					if (_activeFloors != null && _activeFloors.Length > 0)
 					{
 						bool[] prevActiveFloors = _activeFloors;
 						_activeFloors = new bool[_floorEditor.FloorsQuantity];

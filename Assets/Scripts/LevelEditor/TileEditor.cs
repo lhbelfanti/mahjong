@@ -1,4 +1,5 @@
 ﻿using Board.Tile;
+using UnityEditor;
 using UnityEngine;
 
 namespace LevelEditor
@@ -31,7 +32,7 @@ namespace LevelEditor
 			Snap snapScript = tile.GetComponent<Snap>();
 			snapScript.TileState = state;
 			snapScript.BoardSize(boardSize);
-
+			Selection.activeGameObject = tile;
 		}
 	}
 }
