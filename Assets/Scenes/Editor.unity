@@ -175,7 +175,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -405,6 +405,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boardTile: {fileID: 5943988702286095784, guid: eaf366ada03404d0ea4f87f1aed106ae,
+    type: 3}
+  gridCell: {fileID: 6360287843960866523, guid: 229f317d86eb749f7aa36c82e277a2ec,
     type: 3}
 --- !u!114 &1542906770
 MonoBehaviour:

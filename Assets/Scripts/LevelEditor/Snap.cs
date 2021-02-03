@@ -5,8 +5,7 @@ namespace LevelEditor
 {
 	public class Snap : MonoBehaviour
 	{
-		[SerializeField] private RectTransform gridCell;
-
+		private RectTransform _gridCell;
 		private TileCreator.TileStates _tileState;
 
 		private Vector2 _boardSize;
@@ -34,7 +33,7 @@ namespace LevelEditor
 
 		private void SetBounds()
 		{
-			Rect rect = gridCell.rect;
+			Rect rect = _gridCell.rect;
 			float xOffset = 0f;
 			float yOffset = 0f;
 
@@ -138,6 +137,18 @@ namespace LevelEditor
 			return yPos;
 		}
 
+		public void BoardSize(Vector2 value)
+		{
+			_boardSize = value;
+			SetBounds();
+			RoundToNearestCell(transform.position);
+		}
+
+		public RectTransform GridCell
+		{
+			set => _gridCell = value;
+		}
+
 		public TileCreator.TileStates TileState
 		{
 			set => _tileState = value;
@@ -146,12 +157,6 @@ namespace LevelEditor
 		public Renamer Renamer
 		{
 			set => _renamer = value;
-		}
-
-		public void BoardSize(Vector2 value)
-		{
-			_boardSize = value;
-			SetBounds();
 		}
 	}
 }
