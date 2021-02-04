@@ -1,4 +1,6 @@
-﻿using LevelEditor;
+﻿using System.Collections.Generic;
+using Board.Tile;
+using LevelEditor;
 using UnityEditor;
 using UnityEngine;
 using Utils;
@@ -198,22 +200,48 @@ namespace Editor
 			{
 				EditorGUILayout.BeginHorizontal();
 				if (GUILayout.Button("Normal"))
-					CreateTile(1);
+					CreateTile(TileCreator.TileStates.Single);
 
 				if (GUILayout.Button("Double Horizontal"))
-					CreateTile(2);
-
+					CreateTile(TileCreator.TileStates.DoubleH);
 
 				if (GUILayout.Button("Double Vertical"))
-					CreateTile(4);
+					CreateTile(TileCreator.TileStates.DoubleV);
 
+				EditorGUILayout.EndHorizontal();
+
+				TilesByFloorMenu();
+			}
+		}
+
+		private void TilesByFloorMenu()
+		{
+			List<EditorTile> tiles = _boardEditor.Tiles();
+
+			int currentFloor = -1;
+			for (int j = 0; j < tiles.Count; j++)
+			{
+				EditorTile et = tiles[j];
+				if (et.floor != currentFloor)
+				{
+					GUILayout.Label($"Floor {et.floor.ToString()}");
+					currentFloor = et.floor;
+				}
+
+				EditorGUILayout.BeginHorizontal();
+				GUILayout.Label($"Tile - {et.y.ToString()}x{et.x.ToString()}");
+				if (GUILayout.Button("Remove"))
+					_boardEditor.RemoveTile(et);
 				EditorGUILayout.EndHorizontal();
 			}
 		}
 
-		private void CreateTile(int id)
+		private void CreateTile(TileCreator.TileStates id)
 		{
-			_tileEditor.CreateTile(id, _floorEditor.SelectedFloor, new Vector2(_boardWidth, _boardHeight));
+			GameObject tile =
+				_tileEditor.CreateTile(id, _floorEditor.SelectedFloor, new Vector2(_boardWidth, _boardHeight));
+			EditorTile et = tile.GetComponent<EditorTile>();
+			_boardEditor.AddTile(et);
 		}
 	}
 }

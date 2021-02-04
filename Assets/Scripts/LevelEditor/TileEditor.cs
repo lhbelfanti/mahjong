@@ -12,26 +12,29 @@ namespace LevelEditor
 		private int _selectedFloor;
 		private Vector2 _boardSize;
 
-		public void CreateTile(int id, int selectedFloor, Vector2 boardSize)
+		public GameObject CreateTile(TileCreator.TileStates id, int selectedFloor, Vector2 boardSize)
 		{
 			_selectedFloor = selectedFloor;
 			_boardSize = boardSize;
 
+			GameObject tile = null;
 			switch (id)
 			{
-				case (int) TileCreator.TileStates.Single:
-					InstantiateTile(TileCreator.TileStates.Single);
+				case TileCreator.TileStates.Single:
+					tile = InstantiateTile(TileCreator.TileStates.Single);
 					break;
-				case (int) TileCreator.TileStates.DoubleH:
-					InstantiateTile(TileCreator.TileStates.DoubleH, gridCell.rect.width / 2 + GridEditor.Gap);
+				case TileCreator.TileStates.DoubleH:
+					tile = InstantiateTile(TileCreator.TileStates.DoubleH, gridCell.rect.width / 2 + GridEditor.Gap);
 					break;
-				case (int) TileCreator.TileStates.DoubleV:
-					InstantiateTile(TileCreator.TileStates.DoubleV, 0f, -(gridCell.rect.height / 2 + GridEditor.Gap));
+				case TileCreator.TileStates.DoubleV:
+					tile = InstantiateTile(TileCreator.TileStates.DoubleV, 0f, -(gridCell.rect.height / 2 + GridEditor.Gap));
 					break;
 			}
+
+			return tile;
 		}
 
-		private void InstantiateTile(TileCreator.TileStates state, float xOffset = 0f, float yOffset = 0f)
+		private GameObject InstantiateTile(TileCreator.TileStates state, float xOffset = 0f, float yOffset = 0f)
 		{
 			GameObject floor = GameObject.Find($"Floor {_selectedFloor.ToString()}");
 			GameObject tile = Instantiate(boardTile, floor.transform, true);
@@ -43,8 +46,12 @@ namespace LevelEditor
 			snapScript.TileState = state;
 			snapScript.Renamer = tile.GetComponent<Renamer>();
 			snapScript.BoardSize(_boardSize);
+			snapScript.EditorTile = tile.GetComponent<EditorTile>();
+			snapScript.EditorTile.floor = _selectedFloor;
 
 			Selection.activeGameObject = tile;
+
+			return tile;
 		}
 	}
 }

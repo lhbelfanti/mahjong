@@ -7,6 +7,7 @@ namespace LevelEditor
 	{
 		private RectTransform _gridCell;
 		private TileCreator.TileStates _tileState;
+		private EditorTile _editorTile;
 
 		private Vector2 _boardSize;
 		private Vector2[] _widthBound;
@@ -14,8 +15,6 @@ namespace LevelEditor
 		private bool _boundsSet;
 
 		private Renamer _renamer;
-		private int _xIndex;
-		private int _yIndex;
 
 		private int _smoothCounter;
 		private const int Smooth = 10;
@@ -73,7 +72,7 @@ namespace LevelEditor
 		{
 			float xPos = RoundX(pos.x);
 			float yPos = RoundY(pos.y);
-			_renamer.Rename(_tileState, _xIndex, _yIndex);
+			_renamer.Rename(_tileState, _editorTile.x, _editorTile.y);
 			return new Vector3(xPos, yPos, pos.z);
 		}
 
@@ -83,12 +82,12 @@ namespace LevelEditor
 			if (xPos < _widthBound[0].x)
 			{
 				xPos = _widthBound[0].x;
-				_xIndex = 0;
+				_editorTile.x = 0;
 			}
 			else if (xPos > _widthBound[_widthBound.Length - 1].x)
 			{
 				xPos = _widthBound[_widthBound.Length - 1].x;
-				_xIndex = _widthBound.Length - 1;
+				_editorTile.x = _widthBound.Length - 1;
 			}
 
 			if (xPos == x)
@@ -99,7 +98,7 @@ namespace LevelEditor
 					if (xPos > value.x && xPos < value.y)
 					{
 						xPos = value.x;
-						_xIndex = i;
+						_editorTile.x = i;
 						break;
 					}
 				}
@@ -113,12 +112,12 @@ namespace LevelEditor
 			if (yPos > _heightBound[0].x)
 			{
 				yPos = _heightBound[0].x;
-				_yIndex = 0;
+				_editorTile.y = 0;
 			}
 			else if (yPos < _heightBound[_heightBound.Length - 1].x)
 			{
 				yPos = _heightBound[_heightBound.Length - 1].x;
-				_yIndex = _heightBound.Length - 1;
+				_editorTile.y = _heightBound.Length - 1;
 			}
 
 			if (yPos == y)
@@ -129,7 +128,7 @@ namespace LevelEditor
 					if (yPos < value.x && yPos > value.y)
 					{
 						yPos = value.x;
-						_yIndex = i;
+						_editorTile.y = i;
 						break;
 					}
 				}
@@ -141,7 +140,6 @@ namespace LevelEditor
 		{
 			_boardSize = value;
 			SetBounds();
-			RoundToNearestCell(transform.position);
 		}
 
 		public RectTransform GridCell
@@ -157,6 +155,12 @@ namespace LevelEditor
 		public Renamer Renamer
 		{
 			set => _renamer = value;
+		}
+
+		public EditorTile EditorTile
+		{
+			set => _editorTile = value;
+			get => _editorTile;
 		}
 	}
 }
