@@ -17,6 +17,7 @@ namespace Editor
 		// Board
 		private int _boardWidth;
 		private int _boardHeight;
+		private bool _gridCreated;q
 
 		// Floors
 		private bool[] _floorsToggle;
@@ -110,10 +111,23 @@ namespace Editor
 				EditorGUILayout.Separator();
 				EditorGUILayout.BeginHorizontal();
 				if (GUILayout.Button("Create Board"))
+				{
 					_gridEditor.CreateGrid(_boardWidth, _boardHeight);
+					_gridCreated = true;
+				}
 
 				if (GUILayout.Button("Clear Board"))
-					_gridEditor.ClearGrid();
+				{
+					if (EditorUtility.DisplayDialog("Are you sure to clear the board?",
+						"It will delete all the floors and tiles. All the progress you've not saved will be lost.",
+						"Yes", "Cancel"))
+					{
+						_gridEditor.ClearGrid();
+						_gridCreated = false;
+						_boardEditor.RemoveAllTiles();
+						_floorEditor.RemoveAllFloors();
+					}
+				}
 
 				EditorGUILayout.EndHorizontal();
 			}
@@ -125,12 +139,14 @@ namespace Editor
 			_showFloorsMenu = EditorGUILayout.Foldout(_showFloorsMenu, "Floors");
 			if (_showFloorsMenu)
 			{
+				EditorGUI.BeginDisabledGroup(_gridCreated == false);
 				if (GUILayout.Button("Add Floor"))
 				{
 					_floorEditor.AddNewFloor();
 					_floorEditor.SelectedFloor = _floorEditor.SelectedFloor == -1 ?
 						_floorEditor.FloorsQuantity - 1 : _floorEditor.SelectedFloor;
 				}
+				EditorGUI.EndDisabledGroup();
 
 				EditorGUILayout.Separator();
 
@@ -218,6 +234,7 @@ namespace Editor
 			_showTilesMenu = EditorGUILayout.Foldout(_showTilesMenu, "Tiles");
 			if (_showTilesMenu)
 			{
+				EditorGUI.BeginDisabledGroup(_floorEditor.SelectedFloor == -1);
 				EditorGUILayout.BeginHorizontal();
 				if (GUILayout.Button("Normal"))
 					CreateTile(TileCreator.TileStates.Single);
@@ -229,6 +246,7 @@ namespace Editor
 					CreateTile(TileCreator.TileStates.DoubleV);
 
 				EditorGUILayout.EndHorizontal();
+				EditorGUI.EndDisabledGroup();
 
 				TilesByFloorMenu();
 			}

@@ -32,6 +32,18 @@ namespace LevelEditor
 			_floorsQuantity--;
 		}
 
+		public void RemoveAllFloors()
+		{
+			for (int i = 0; i < _floorsQuantity; i++)
+			{
+				Transform floor = floorsContainer.Find($"Floor {i.ToString()}");
+				DestroyImmediate(floor.gameObject);
+			}
+
+			_floorsQuantity = 0;
+			SelectedFloor = -1;
+		}
+
 		public void SelectFloor(int floorIndex, bool value)
 		{
 			Transform floor = floorsContainer.Find($"Floor {floorIndex.ToString()}");

@@ -35,6 +35,11 @@ namespace LevelEditor
 			}
 		}
 
+		public void RemoveAllTiles()
+		{
+			_tiles = new List<EditorTile>();
+		}
+
 		public List<EditorTile> Tiles()
 		{
 			return _tiles.Count > 0 ? _tiles.OrderBy(o => o.floor).ThenBy(o => o.x).ToList() : _tiles;
