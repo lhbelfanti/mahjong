@@ -17,7 +17,7 @@ namespace Editor
 		// Board
 		private int _boardWidth;
 		private int _boardHeight;
-		private bool _gridCreated;q
+		private bool _gridCreated;
 
 		// Floors
 		private bool[] _floorsToggle;
