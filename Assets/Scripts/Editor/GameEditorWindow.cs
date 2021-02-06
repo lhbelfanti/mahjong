@@ -150,6 +150,7 @@ namespace Editor
 					{
 						_floorEditor.RemoveFloor(i);
 						_floorEditor.SelectedFloor = _floorEditor.SelectedFloor == i ? -1 : _floorEditor.SelectedFloor;
+						_boardEditor.RemoveTilesInFloor(i);
 						_deletedFloor = i;
 						_deletedTileSubmenu = i;
 					}
