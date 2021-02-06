@@ -24,6 +24,10 @@ namespace Editor
 		private bool[] _activeFloors;
 		private int _deletedFloor = -1;
 
+		// Tiles
+		private bool[] _tilesSubmenus;
+		private int _prevTileSubmenusQuantity;
+		private int _deletedTileSubmenu = -1;
 
 		// Visual stuff
 		private bool _showScriptsMenu;
@@ -58,6 +62,16 @@ namespace Editor
 			var rect = EditorGUILayout.BeginHorizontal();
 			Handles.color = Color.gray;
 			Handles.DrawLine(new Vector2(rect.x - 15, rect.y), new Vector2(rect.width + 15, rect.y));
+			EditorGUILayout.EndHorizontal();
+			EditorGUILayout.Separator();
+		}
+
+		private void SeparateSubMenu()
+		{
+			EditorGUILayout.Separator();
+			var rect = EditorGUILayout.BeginHorizontal();
+			Handles.color = Color.gray;
+			Handles.DrawLine(new Vector2(rect.x + 15, rect.y), new Vector2(rect.width - 15, rect.y));
 			EditorGUILayout.EndHorizontal();
 			EditorGUILayout.Separator();
 		}
@@ -120,33 +134,7 @@ namespace Editor
 
 				EditorGUILayout.Separator();
 
-				if (_prevFloorsQuantity != _floorEditor.FloorsQuantity)
-				{
-					_floorsToggle = new bool[_floorEditor.FloorsQuantity];
-					if (_activeFloors != null && _activeFloors.Length > 0)
-					{
-						bool[] prevActiveFloors = _activeFloors;
-						_activeFloors = new bool[_floorEditor.FloorsQuantity];
-						_activeFloors.Init(true);
-						int c = 0;
-						for (int p = 0; p < prevActiveFloors.Length; p++)
-						{
-							if (p == _deletedFloor)
-								continue;
-							_activeFloors[c] = prevActiveFloors[p];
-							c++;
-						}
-
-						_deletedFloor = -1;
-					}
-					else
-					{
-						_activeFloors = new bool[_floorEditor.FloorsQuantity];
-						_activeFloors.Init(true);
-					}
-
-					_prevFloorsQuantity = _floorEditor.FloorsQuantity;
-				}
+				FloorsMenuVisualCalculation();
 
 				for (int i = 0; i < _floorEditor.FloorsQuantity; i++)
 				{
@@ -158,11 +146,12 @@ namespace Editor
 					_activeFloors[i] = GUILayout.Toggle(_activeFloors[i], $"Active");
 					SelectFloor(i);
 
-					if (GUILayout.Button("Remove"))
+					if (GUILayout.Button("Remove", GUILayout.Width(150)))
 					{
 						_floorEditor.RemoveFloor(i);
 						_floorEditor.SelectedFloor = _floorEditor.SelectedFloor == i ? -1 : _floorEditor.SelectedFloor;
 						_deletedFloor = i;
+						_deletedTileSubmenu = i;
 					}
 
 					EditorGUILayout.EndHorizontal();
@@ -171,6 +160,36 @@ namespace Editor
 				if (_floorEditor.SelectedFloor >= 0 && _floorEditor.SelectedFloor < _floorsToggle.Length)
 					_floorsToggle[_floorEditor.SelectedFloor] = true;
 
+			}
+		}
+
+		private void FloorsMenuVisualCalculation()
+		{
+			if (_prevFloorsQuantity != _floorEditor.FloorsQuantity)
+			{
+				_floorsToggle = new bool[_floorEditor.FloorsQuantity];
+				if (_activeFloors != null && _activeFloors.Length > 0)
+				{
+					bool[] prevActiveFloors = _activeFloors;
+					_activeFloors = new bool[_floorEditor.FloorsQuantity];
+					_activeFloors.Init(true);
+					int c = 0;
+					for (int p = 0; p < prevActiveFloors.Length; p++)
+					{
+						if (p == _deletedFloor)
+							continue;
+						_activeFloors[c] = prevActiveFloors[p];
+						c++;
+					}
+					_deletedFloor = -1;
+				}
+				else
+				{
+					_activeFloors = new bool[_floorEditor.FloorsQuantity];
+					_activeFloors.Init(true);
+				}
+
+				_prevFloorsQuantity = _floorEditor.FloorsQuantity;
 			}
 		}
 
@@ -216,24 +235,74 @@ namespace Editor
 
 		private void TilesByFloorMenu()
 		{
+			TileSubmenusVisualCalculation();
+
+			SeparateSubMenu();
+			GUILayout.Label("Tiles by floor");
+			EditorGUILayout.Separator();
+
 			List<EditorTile> tiles = _boardEditor.Tiles();
 
-			int currentFloor = -1;
-			for (int j = 0; j < tiles.Count; j++)
+			GUIStyle labelStyle = CreateStyleWithMargin(GUI.skin.label, 30, 0);
+			GUIStyle buttonStyle = CreateStyleWithMargin (GUI.skin.button, 0, 15);
+			GUIStyle foldoutStyle = CreateStyleWithMargin (EditorStyles.foldout,  5, 0);
+
+			for (int i = 0; i < _floorEditor.FloorsQuantity; i++)
 			{
-				EditorTile et = tiles[j];
-				if (et.floor != currentFloor)
+				_tilesSubmenus[i] = EditorGUILayout.Foldout(_tilesSubmenus[i], $"Floor {i.ToString()}", foldoutStyle);
+				if (_tilesSubmenus[i])
 				{
-					GUILayout.Label($"Floor {et.floor.ToString()}");
-					currentFloor = et.floor;
+					while (tiles.Count > 0)
+					{
+						EditorTile et = tiles[0];
+						if (et.floor != i)
+							break;
+
+						EditorGUILayout.BeginHorizontal();
+						GUILayout.Label(et.Name(), labelStyle);
+						if (GUILayout.Button("Remove", buttonStyle, GUILayout.Width(150)))
+							_boardEditor.RemoveTile(et);
+						EditorGUILayout.EndHorizontal();
+						tiles.RemoveAt(0);
+					}
+				}
+			}
+		}
+
+		private void TileSubmenusVisualCalculation()
+		{
+			if (_prevTileSubmenusQuantity != _floorEditor.FloorsQuantity)
+			{
+				if (_tilesSubmenus != null && _tilesSubmenus.Length > 0)
+				{
+					bool[] prevTileSubmenus = _tilesSubmenus;
+					_tilesSubmenus = new bool[_floorEditor.FloorsQuantity];
+					_tilesSubmenus.Init(true);
+					int c = 0;
+					for (int p = 0; p < prevTileSubmenus.Length; p++)
+					{
+						if (p == _deletedTileSubmenu)
+							continue;
+						_tilesSubmenus[c] = prevTileSubmenus[p];
+						c++;
+					}
+					_deletedTileSubmenu = -1;
+				}
+				else
+				{
+					_tilesSubmenus = new bool[_floorEditor.FloorsQuantity];
+					_tilesSubmenus.Init(true);
 				}
 
-				EditorGUILayout.BeginHorizontal();
-				GUILayout.Label($"Tile - {et.y.ToString()}x{et.x.ToString()}");
-				if (GUILayout.Button("Remove"))
-					_boardEditor.RemoveTile(et);
-				EditorGUILayout.EndHorizontal();
+				_prevTileSubmenusQuantity = _floorEditor.FloorsQuantity;
 			}
+		}
+
+		private GUIStyle CreateStyleWithMargin(GUIStyle style, int left, int right, int top = 0, int bottom = 0)
+		{
+			GUIStyle newStyle = new GUIStyle (style);
+			newStyle.margin = new RectOffset(left, right, top, bottom);
+			return newStyle;
 		}
 
 		private void CreateTile(TileCreator.TileStates id)

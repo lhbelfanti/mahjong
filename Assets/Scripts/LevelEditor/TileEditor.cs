@@ -42,12 +42,12 @@ namespace LevelEditor
 			tile.transform.position = new Vector3(tilePos.x + xOffset, tilePos.y + yOffset, tilePos.z);
 
 			Snap snapScript = tile.GetComponent<Snap>();
-			snapScript.GridCell = gridCell;
-			snapScript.TileState = state;
-			snapScript.Renamer = tile.GetComponent<Renamer>();
-			snapScript.BoardSize(_boardSize);
 			snapScript.EditorTile = tile.GetComponent<EditorTile>();
 			snapScript.EditorTile.floor = _selectedFloor;
+			snapScript.EditorTile.state = state;
+			snapScript.GridCell = gridCell;
+			snapScript.BoardSize(_boardSize);
+
 
 			Selection.activeGameObject = tile;
 

@@ -34,7 +34,7 @@ namespace Utils
 		public static List<GameObject> GetActiveChildren(this GameObject element)
 		{
 			List<GameObject> list = new List<GameObject>();
-			for (int i = 0; i< element.transform.childCount; i++)
+			for (int i = 0; i < element.transform.childCount; i++)
 			{
 				GameObject child = element.transform.GetChild(i).gameObject;
 				if (child.activeSelf)

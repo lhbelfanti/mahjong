@@ -17,11 +17,12 @@ namespace LevelEditor
 		public void RemoveTile(EditorTile tile)
 		{
 			_tiles.Remove(tile);
+			DestroyImmediate(tile.gameObject);
 		}
 
 		public List<EditorTile> Tiles()
 		{
-			return _tiles.OrderBy(o => o.floor).ThenBy(o => o.x).ToList();
+			return _tiles.Count > 0 ? _tiles.OrderBy(o => o.floor).ThenBy(o => o.x).ToList() : _tiles;
 		}
 	}
 }

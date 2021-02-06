@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Board.Tile;
+using UnityEngine;
 
 namespace LevelEditor
 {
@@ -10,5 +11,26 @@ namespace LevelEditor
 		public int y;
 		[HideInInspector]
 		public int floor;
+		[HideInInspector]
+		public TileCreator.TileStates state;
+
+		public string Name()
+		{
+			string newName = $"{y.ToString()}x{x.ToString()} - ";
+			switch (state)
+			{
+				case TileCreator.TileStates.Single:
+					newName += "Single";
+					break;
+				case TileCreator.TileStates.DoubleH:
+					newName += "DoubleH";
+					break;
+				case TileCreator.TileStates.DoubleV:
+					newName += "DoubleV";
+					break;
+			}
+
+			return newName;
+		}
 	}
 }

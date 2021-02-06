@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7181053114002698463}
   - component: {fileID: 3834004054671916141}
   - component: {fileID: 6222524848147822456}
-  - component: {fileID: 2965642904375783605}
   - component: {fileID: 1162627372310415516}
   m_Layer: 0
   m_Name: EditorTile
@@ -66,18 +65,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 695be0d4d5abc4790be3a5389bd7c913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2965642904375783605
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5943988702286095784}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebd5ea5f4e4c34e538617c9b192b6696, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1162627372310415516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93,6 +80,7 @@ MonoBehaviour:
   x: 0
   y: 0
   floor: 0
+  state: 0
 --- !u!1001 &3977342491866978266
 PrefabInstance:
   m_ObjectHideFlags: 0

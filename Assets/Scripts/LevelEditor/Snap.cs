@@ -6,15 +6,12 @@ namespace LevelEditor
 	public class Snap : MonoBehaviour
 	{
 		private RectTransform _gridCell;
-		private TileCreator.TileStates _tileState;
 		private EditorTile _editorTile;
 
 		private Vector2 _boardSize;
 		private Vector2[] _widthBound;
 		private Vector2[] _heightBound;
 		private bool _boundsSet;
-
-		private Renamer _renamer;
 
 		private int _smoothCounter;
 		private const int Smooth = 10;
@@ -39,7 +36,7 @@ namespace LevelEditor
 			_widthBound = new Vector2[(int) _boardSize.x];
 			_heightBound = new Vector2[(int) _boardSize.y];
 
-			switch (_tileState)
+			switch (_editorTile.state)
 			{
 				case TileCreator.TileStates.DoubleH:
 					_widthBound = new Vector2[(int) _boardSize.x - 1];
@@ -72,7 +69,7 @@ namespace LevelEditor
 		{
 			float xPos = RoundX(pos.x);
 			float yPos = RoundY(pos.y);
-			_renamer.Rename(_tileState, _editorTile.x, _editorTile.y);
+			transform.name = _editorTile.Name();
 			return new Vector3(xPos, yPos, pos.z);
 		}
 
@@ -145,16 +142,6 @@ namespace LevelEditor
 		public RectTransform GridCell
 		{
 			set => _gridCell = value;
-		}
-
-		public TileCreator.TileStates TileState
-		{
-			set => _tileState = value;
-		}
-
-		public Renamer Renamer
-		{
-			set => _renamer = value;
 		}
 
 		public EditorTile EditorTile
