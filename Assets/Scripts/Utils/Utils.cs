@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Security.Cryptography;
+using UnityEditor;
 using UnityEngine;
 
 namespace Utils
@@ -47,6 +49,14 @@ namespace Utils
 		{
 			for (int i = 0; i < array.Length; i++)
 				array[i] = value;
+		}
+
+		public static void ClearConsole()
+		{
+			var assembly = Assembly.GetAssembly(typeof(SceneView));
+			var type = assembly.GetType("UnityEditor.LogEntries");
+			var method = type.GetMethod("Clear");
+			method.Invoke(new object(), null);
 		}
 	}
 }

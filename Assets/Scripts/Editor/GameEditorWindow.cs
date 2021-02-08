@@ -30,11 +30,16 @@ namespace Editor
 		private int _prevTileSubmenusQuantity;
 		private int _deletedTileSubmenu = -1;
 
+		// Exporter
+		private Exporter _exporter;
+		private bool _validatorEnabled;
+
 		// Visual stuff
 		private bool _showScriptsMenu;
 		private bool _showBoardMenu = true;
 		private bool _showFloorsMenu = true;
 		private bool _showTilesMenu = true;
+		private bool _showExporterMenu = true;
 
 
 		[MenuItem("Window/GameEditor")]
@@ -84,6 +89,7 @@ namespace Editor
 			BoardSpecificationsMenu();
 			FloorsMenu();
 			TilesMenu();
+			ExporterMenu();
 		}
 
 		private void ScriptsMenu()
@@ -126,6 +132,8 @@ namespace Editor
 						_gridCreated = false;
 						_boardEditor.RemoveAllTiles();
 						_floorEditor.RemoveAllFloors();
+						InvalidateExporter();
+						_validatorEnabled = false;
 					}
 				}
 
@@ -139,12 +147,13 @@ namespace Editor
 			_showFloorsMenu = EditorGUILayout.Foldout(_showFloorsMenu, "Floors");
 			if (_showFloorsMenu)
 			{
-				EditorGUI.BeginDisabledGroup(_gridCreated == false);
+				EditorGUI.BeginDisabledGroup(!_gridCreated);
 				if (GUILayout.Button("Add Floor"))
 				{
 					_floorEditor.AddNewFloor();
 					_floorEditor.SelectedFloor = _floorEditor.SelectedFloor == -1 ?
 						_floorEditor.FloorsQuantity - 1 : _floorEditor.SelectedFloor;
+					InvalidateExporter();
 				}
 				EditorGUI.EndDisabledGroup();
 
@@ -169,6 +178,7 @@ namespace Editor
 						_boardEditor.RemoveTilesInFloor(i);
 						_deletedFloor = i;
 						_deletedTileSubmenu = i;
+						InvalidateExporter();
 					}
 
 					EditorGUILayout.EndHorizontal();
@@ -280,7 +290,11 @@ namespace Editor
 						EditorGUILayout.BeginHorizontal();
 						GUILayout.Label(et.Name(), labelStyle);
 						if (GUILayout.Button("Remove", buttonStyle, GUILayout.Width(150)))
+						{
 							_boardEditor.RemoveTile(et);
+							InvalidateExporter();
+						}
+
 						EditorGUILayout.EndHorizontal();
 						tiles.RemoveAt(0);
 					}
@@ -326,10 +340,41 @@ namespace Editor
 
 		private void CreateTile(TileCreator.TileStates id)
 		{
-			GameObject tile =
-				_tileEditor.CreateTile(id, _floorEditor.SelectedFloor, new Vector2(_boardWidth, _boardHeight));
+			GameObject tile = _tileEditor.CreateTile(id, _floorEditor.SelectedFloor, new Vector2(_boardWidth, _boardHeight));
 			EditorTile et = tile.GetComponent<EditorTile>();
 			_boardEditor.AddTile(et);
+
+			InvalidateExporter();
+			_validatorEnabled = true;
+		}
+
+		private void ExporterMenu()
+		{
+			SeparateMenu();
+			_showExporterMenu = EditorGUILayout.Foldout(_showExporterMenu, "Exporter");
+			if (_showExporterMenu)
+			{
+				EditorGUI.BeginDisabledGroup(!_validatorEnabled);
+				if (GUILayout.Button("Validate"))
+				{
+					_exporter = new Exporter(_boardEditor.Tiles(),
+							new Vector3(_boardWidth, _boardHeight, _floorEditor.FloorsQuantity));
+					_exporter.Validate();
+				}
+				EditorGUI.EndDisabledGroup();
+
+				EditorGUI.BeginDisabledGroup(_exporter == null || (_exporter != null && !_exporter.canBeExported));
+				if (GUILayout.Button("Export"))
+					_exporter?.Export();
+
+				EditorGUI.EndDisabledGroup();
+			}
+		}
+
+		private void InvalidateExporter()
+		{
+			if (_exporter != null)
+				_exporter.canBeExported = false;
 		}
 	}
 }

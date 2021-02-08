@@ -39,7 +39,7 @@ namespace LevelEditor
 			GameObject floor = GameObject.Find($"Floor {_selectedFloor.ToString()}");
 			GameObject tile = Instantiate(boardTile, floor.transform, true);
 			Vector3 tilePos = tile.transform.position;
-			tile.transform.position = new Vector3(tilePos.x + xOffset, tilePos.y + yOffset, tilePos.z);
+			tile.transform.position = new Vector3(tilePos.x + xOffset, tilePos.y + yOffset, -_selectedFloor);
 
 			Snap snapScript = tile.GetComponent<Snap>();
 			snapScript.EditorTile = tile.GetComponent<EditorTile>();
