@@ -24,11 +24,13 @@ namespace Editor
 		private int _prevFloorsQuantity;
 		private bool[] _activeFloors;
 		private int _deletedFloor = -1;
+		private Vector2 _floorsScrollPos;
 
 		// Tiles
 		private bool[] _tilesSubmenus;
 		private int _prevTileSubmenusQuantity;
 		private int _deletedTileSubmenu = -1;
+		private Vector2 _tilesScrollPos;
 
 		// Exporter
 		private Exporter _exporter;
@@ -161,6 +163,7 @@ namespace Editor
 
 				FloorsMenuVisualCalculation();
 
+				_floorsScrollPos = EditorGUILayout.BeginScrollView(_floorsScrollPos);
 				for (int i = 0; i < _floorEditor.FloorsQuantity; i++)
 				{
 					EditorGUILayout.BeginHorizontal();
@@ -183,6 +186,7 @@ namespace Editor
 
 					EditorGUILayout.EndHorizontal();
 				}
+				EditorGUILayout.EndScrollView();
 
 				if (_floorEditor.SelectedFloor >= 0 && _floorEditor.SelectedFloor < _floorsToggle.Length)
 					_floorsToggle[_floorEditor.SelectedFloor] = true;
@@ -267,15 +271,17 @@ namespace Editor
 			TileSubmenusVisualCalculation();
 
 			SeparateSubMenu();
-			GUILayout.Label("Tiles by floor");
-			EditorGUILayout.Separator();
 
 			List<EditorTile> tiles = _boardEditor.Tiles();
+
+			GUILayout.Label($"Tiles Count: {tiles.Count.ToString()}");
+			EditorGUILayout.Separator();
 
 			GUIStyle labelStyle = CreateStyleWithMargin(GUI.skin.label, 30, 0);
 			GUIStyle buttonStyle = CreateStyleWithMargin (GUI.skin.button, 0, 15);
 			GUIStyle foldoutStyle = CreateStyleWithMargin (EditorStyles.foldout,  5, 0);
 
+			_tilesScrollPos = EditorGUILayout.BeginScrollView(_tilesScrollPos);
 			for (int i = 0; i < _floorEditor.FloorsQuantity; i++)
 			{
 				_tilesSubmenus[i] = EditorGUILayout.Foldout(_tilesSubmenus[i], $"Floor {i.ToString()}", foldoutStyle);
@@ -289,6 +295,10 @@ namespace Editor
 
 						EditorGUILayout.BeginHorizontal();
 						GUILayout.Label(et.Name(), labelStyle);
+
+						if (GUILayout.Button("Select", buttonStyle, GUILayout.Width(100)))
+							Selection.activeGameObject = et.gameObject;
+
 						if (GUILayout.Button("Remove", buttonStyle, GUILayout.Width(150)))
 						{
 							_boardEditor.RemoveTile(et);
@@ -300,6 +310,7 @@ namespace Editor
 					}
 				}
 			}
+			EditorGUILayout.EndScrollView();
 		}
 
 		private void TileSubmenusVisualCalculation()

@@ -24,10 +24,10 @@ namespace LevelEditor
 					tile = InstantiateTile(TileCreator.TileStates.Single);
 					break;
 				case TileCreator.TileStates.DoubleH:
-					tile = InstantiateTile(TileCreator.TileStates.DoubleH, gridCell.rect.width / 2 + GridEditor.Gap);
+					tile = InstantiateTile(TileCreator.TileStates.DoubleH, gridCell.rect.width / 2);
 					break;
 				case TileCreator.TileStates.DoubleV:
-					tile = InstantiateTile(TileCreator.TileStates.DoubleV, 0f, -(gridCell.rect.height / 2 + GridEditor.Gap));
+					tile = InstantiateTile(TileCreator.TileStates.DoubleV, 0f, -(gridCell.rect.height / 2));
 					break;
 			}
 

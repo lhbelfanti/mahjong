@@ -29,7 +29,6 @@ namespace LevelEditor
 			{
 				canBeExported = false;
 				Debug.LogError("The number of tiles must be even.");
-				return;
 			}
 
 			_dimensions.ToInts(out int width, out int height, out int floors);
@@ -42,32 +41,26 @@ namespace LevelEditor
 				{
 					case TileCreator.TileStates.Single:
 						tileValidator = new SingleTileValidator(_tiles, et);
-						if (tileValidator.Validate())
-							_tiles[et.x, et.y, et.floor] = 1;
-						else
+						if (!tileValidator.Validate())
 							canBeExported = false;
+
+						_tiles[et.x, et.y, et.floor] = 1;
 						break;
 					case TileCreator.TileStates.DoubleH:
 						tileValidator = new DoubleHTileValidator(_tiles, et);
-						if (tileValidator.Validate())
-						{
-							_tiles[et.x, et.y, et.floor] = 2;
-							_tiles[et.x + 1, et.y, et.floor] = 2;
-						}
-						else
+						if (!tileValidator.Validate())
 							canBeExported = false;
 
+						_tiles[et.x, et.y, et.floor] = 2;
+						_tiles[et.x + 1, et.y, et.floor] = 2;
 						break;
 					case TileCreator.TileStates.DoubleV:
 						tileValidator = new DoubleVTileValidator(_tiles, et);
-						if (tileValidator.Validate())
-						{
-							_tiles[et.x, et.y, et.floor] = 4;
-							_tiles[et.x, et.y + 1, et.floor] = 4;
-						}
-						else
+						if (!tileValidator.Validate())
 							canBeExported = false;
 
+						_tiles[et.x, et.y, et.floor] = 4;
+						_tiles[et.x, et.y + 1, et.floor] = 4;
 						break;
 				}
 			}

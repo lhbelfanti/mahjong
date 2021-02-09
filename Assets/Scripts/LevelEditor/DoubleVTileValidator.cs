@@ -8,7 +8,7 @@
 
 		public override bool Validate()
 		{
-			_initialMessage = $"Floor {_et.floor.ToString()} - {_et.y.ToString()}x{_et.x.ToString()} DoubleH Tile:\n";
+			_initialMessage = $"Floor {_et.floor.ToString()} - {_et.y.ToString()}x{_et.x.ToString()} DoubleV Tile:\n";
 
 			string msg1 = $"Error 1: There is already another tile in the position {_et.y.ToString()}x{_et.x.ToString()}.\n";
 
@@ -32,8 +32,10 @@
 		{
 			if (_et.floor != 0)
 			{
-				return IsThereATile(_et.x, _et.y, _et.floor - 1, msg1) &&
-				       IsThereATile(_et.x, _et.y + 1, _et.floor - 1, msg2);
+				bool validation1 = IsThereATile(_et.x, _et.y, _et.floor - 1, msg1);
+				bool validation2 = IsThereATile(_et.x, _et.y + 1, _et.floor - 1, msg2);
+
+				return validation1 && validation2;
 			}
 
 			return true;
