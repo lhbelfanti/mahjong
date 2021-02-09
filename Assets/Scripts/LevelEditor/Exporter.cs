@@ -69,7 +69,7 @@ namespace LevelEditor
 				Debug.Log("Validation Successful!");
 		}
 
-		public void Export()
+		public void SaveTemp()
 		{
 			_dimensions.ToInts(out int width, out int height, out int floors);
 			LevelData levelData = new LevelData();
@@ -95,6 +95,9 @@ namespace LevelEditor
 
 				levelData.data.Add(levelInfo);
 			}
+
+			string levelDataJson = JsonUtility.ToJson(levelData);
+
 		}
 	}
 }

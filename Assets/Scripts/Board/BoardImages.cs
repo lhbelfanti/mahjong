@@ -9,7 +9,7 @@ namespace Board
 {
 	public class BoardImages
 	{
-		private enum FillMethod
+		public enum FillMethod
 		{
 			Random = 0,
 			ByFloor = 1
