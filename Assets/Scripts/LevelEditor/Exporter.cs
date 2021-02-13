@@ -12,7 +12,10 @@ namespace LevelEditor
 		private readonly Vector3 _dimensions;
 		private readonly List<EditorTile> _editorTiles;
 
-		public bool canBeExported;
+		public bool CanBeExported;
+
+		public const int EditorLevelNum = 99999;
+		public const string EditorLevelPath = "Text/editorLevel";
 
 		public Exporter(List<EditorTile> editorTiles, Vector3 dimensions)
 		{
@@ -23,11 +26,11 @@ namespace LevelEditor
 		public void Validate()
 		{
 			Utils.Utils.ClearConsole();
-			canBeExported = true;
+			CanBeExported = true;
 
 			if (_editorTiles.Count % 2 != 0)
 			{
-				canBeExported = false;
+				CanBeExported = false;
 				Debug.LogError("The number of tiles must be even.");
 			}
 
@@ -42,14 +45,14 @@ namespace LevelEditor
 					case TileCreator.TileStates.Single:
 						tileValidator = new SingleTileValidator(_tiles, et);
 						if (!tileValidator.Validate())
-							canBeExported = false;
+							CanBeExported = false;
 
 						_tiles[et.x, et.y, et.floor] = 1;
 						break;
 					case TileCreator.TileStates.DoubleH:
 						tileValidator = new DoubleHTileValidator(_tiles, et);
 						if (!tileValidator.Validate())
-							canBeExported = false;
+							CanBeExported = false;
 
 						_tiles[et.x, et.y, et.floor] = 2;
 						_tiles[et.x + 1, et.y, et.floor] = 2;
@@ -57,7 +60,7 @@ namespace LevelEditor
 					case TileCreator.TileStates.DoubleV:
 						tileValidator = new DoubleVTileValidator(_tiles, et);
 						if (!tileValidator.Validate())
-							canBeExported = false;
+							CanBeExported = false;
 
 						_tiles[et.x, et.y, et.floor] = 4;
 						_tiles[et.x, et.y + 1, et.floor] = 4;
@@ -65,15 +68,21 @@ namespace LevelEditor
 				}
 			}
 
-			if (canBeExported)
+			if (CanBeExported)
 				Debug.Log("Validation Successful!");
 		}
 
-		public void SaveTemp()
+		public void SaveTemp(int fillType)
+		{
+			Save(EditorLevelNum, fillType, "");
+		}
+
+		public void Save(int level, int fillType, string path)
 		{
 			_dimensions.ToInts(out int width, out int height, out int floors);
 			LevelData levelData = new LevelData();
-			levelData.fillMethod = 0; //TODO: Change it
+			levelData.level = level;
+			levelData.fillMethod = fillType;
 			levelData.data = new List<LevelInfo>();
 
 			for (int f = 0; f < floors; f++)
@@ -97,7 +106,11 @@ namespace LevelEditor
 			}
 
 			string levelDataJson = JsonUtility.ToJson(levelData);
+			string url = path == ""
+				? $"{Application.dataPath}/Resources/{EditorLevelPath}.json"
+				: $"{path}level{level.ToString()}.json";
 
+			System.IO.File.WriteAllText(url, levelDataJson);
 		}
 	}
 }

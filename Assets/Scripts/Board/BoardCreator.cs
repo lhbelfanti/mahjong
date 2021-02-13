@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Board.Tile;
 using Level;
+using LevelEditor;
 using UnityEngine;
 using Utils;
 using Vector3 = UnityEngine.Vector3;
@@ -26,7 +27,10 @@ namespace Board
 
 		public void CreateBoard(int levelId)
 		{
-			TextAsset levelJson = Resources.Load<TextAsset> ($"Text/level{levelId.ToString()}");
+			string levelPath = levelId == Exporter.EditorLevelNum
+				? Exporter.EditorLevelPath
+				: $"Text/level{levelId.ToString()}";
+			TextAsset levelJson = Resources.Load<TextAsset>(levelPath);
 			LevelData levelData = JsonUtility.FromJson<LevelData>(levelJson.text);
 			List<LevelInfo> levelInfo = levelData.data;
 

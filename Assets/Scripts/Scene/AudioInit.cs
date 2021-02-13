@@ -2,7 +2,7 @@
 
 namespace Scene
 {
-	public class MainScene : MonoBehaviour
+	public class AudioInit : MonoBehaviour
 	{
 		[SerializeField] private GameObject audioManager;
 

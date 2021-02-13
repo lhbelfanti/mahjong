@@ -9,15 +9,18 @@ using Utils;
 
 namespace Editor
 {
-	public class GameEditorWindow : EditorWindow
+	public class LevelsEditorWindow : EditorWindow
 	{
+		public static bool OnGUIActive = false;
+
+		private Vector2 _scrollPos;
+
+		//Scripts
+		private bool _showScriptsMenu;
 		private GridEditor _gridEditor;
 		private BoardEditor _boardEditor;
 		private FloorEditor _floorEditor;
 		private TileEditor _tileEditor;
-
-		//Scripts
-		private bool _showScriptsMenu;
 
 		// Board
 		private bool _showBoardMenu = true;
@@ -31,19 +34,18 @@ namespace Editor
 		private int _prevFloorsQuantity;
 		private bool[] _activeFloors;
 		private int _deletedFloor = -1;
-		private Vector2 _floorsScrollPos;
 
 		// Tiles
 		private bool _showTilesMenu = true;
 		private bool[] _tilesSubmenus;
 		private int _prevTileSubmenusQuantity;
 		private int _deletedTileSubmenu = -1;
-		private Vector2 _tilesScrollPos;
 
 		// Validator
 		private bool _showValidatorMenu = true;
 		private Exporter _exporter;
 		private bool _validatorEnabled;
+		private int _validatorFillMethod;
 
 		// Exporter
 		private bool _showExporterMenu = true;
@@ -53,21 +55,24 @@ namespace Editor
 		private int _fillMethod;
 		private int _choiceIndex;
 
-		[MenuItem("Window/GameEditor")]
+		[MenuItem("Editor/Open Levels Editor")]
 		public static void ShowWindow()
 		{
-			GetWindow<GameEditorWindow>("Game Editor");
+			GetWindow<LevelsEditorWindow>("Levels Editor");
 		}
 
 		public void OnEnable()
 		{
-			GameObject editor = GameObject.Find("EditorManager");
-			_gridEditor = editor.GetComponent<GridEditor>();
-			_boardEditor = editor.GetComponent<BoardEditor>();
-			_floorEditor = editor.GetComponent<FloorEditor>();
-			_tileEditor = editor.GetComponent<TileEditor>();
-			_defaultPath = Application.dataPath + "/Resources/Text/";
-			_savePath = _defaultPath;
+			if (OnGUIActive)
+			{
+				GameObject editor = GameObject.Find("EditorManager");
+				_gridEditor = editor.GetComponent<GridEditor>();
+				_boardEditor = editor.GetComponent<BoardEditor>();
+				_floorEditor = editor.GetComponent<FloorEditor>();
+				_tileEditor = editor.GetComponent<TileEditor>();
+				_defaultPath = $"{Application.dataPath}/Resources/Text/";
+				_savePath = _defaultPath;
+			}
 		}
 
 		public void OnInspectorUpdate()
@@ -97,13 +102,20 @@ namespace Editor
 
 		public void OnGUI()
 		{
-			EditorGUILayout.Separator();
-			ScriptsMenu();
-			BoardSpecificationsMenu();
-			FloorsMenu();
-			TilesMenu();
-			ExporterMenu();
-			SaveMenu();
+			if (OnGUIActive)
+			{
+				_scrollPos = EditorGUILayout.BeginScrollView(_scrollPos);
+
+				EditorGUILayout.Separator();
+				ScriptsMenu();
+				BoardSpecificationsMenu();
+				FloorsMenu();
+				TilesMenu();
+				ValidatorMenu();
+				ExporterMenu();
+
+				EditorGUILayout.EndScrollView();
+			}
 		}
 
 		private void ScriptsMenu()
@@ -158,12 +170,15 @@ namespace Editor
 		private void FloorsMenu()
 		{
 			SeparateMenu();
+
+			if (!_floorEditor)
+				OnEnable();
+
 			_showFloorsMenu = EditorGUILayout.Foldout(_showFloorsMenu, "Floors");
 			if (_showFloorsMenu)
 			{
 				FloorsMenuVisualCalculation();
 
-				_floorsScrollPos = EditorGUILayout.BeginScrollView(_floorsScrollPos);
 				for (int i = 0; i < _floorEditor.FloorsQuantity; i++)
 				{
 					EditorGUILayout.BeginHorizontal();
@@ -186,7 +201,6 @@ namespace Editor
 
 					EditorGUILayout.EndHorizontal();
 				}
-				EditorGUILayout.EndScrollView();
 
 				EditorGUILayout.Separator();
 
@@ -293,7 +307,6 @@ namespace Editor
 			GUIStyle buttonStyle = CreateStyleWithMargin (GUI.skin.button, 0, 15);
 			GUIStyle foldoutStyle = CreateStyleWithMargin (EditorStyles.foldout,  5, 0);
 
-			_tilesScrollPos = EditorGUILayout.BeginScrollView(_tilesScrollPos);
 			for (int i = 0; i < _floorEditor.FloorsQuantity; i++)
 			{
 				_tilesSubmenus[i] = EditorGUILayout.Foldout(_tilesSubmenus[i], $"Floor {i.ToString()}", foldoutStyle);
@@ -322,7 +335,6 @@ namespace Editor
 					}
 				}
 			}
-			EditorGUILayout.EndScrollView();
 		}
 
 		private void TileSubmenusVisualCalculation()
@@ -371,12 +383,22 @@ namespace Editor
 			_validatorEnabled = true;
 		}
 
-		private void ExporterMenu()
+		private void ValidatorMenu()
 		{
 			SeparateMenu();
 			_showValidatorMenu = EditorGUILayout.Foldout(_showValidatorMenu, "Validator");
 			if (_showValidatorMenu)
 			{
+				EditorGUILayout.BeginHorizontal();
+				EditorGUIUtility.labelWidth = GUI.skin.label.CalcSize(new GUIContent("Fill Method: ")).x;
+				_validatorFillMethod = EditorGUILayout.IntField("Fill Method: ",
+					Mathf.Clamp(_validatorFillMethod, 0, Enum.GetNames(typeof(BoardImages.FillMethod)).Length - 1),
+					GUILayout.ExpandWidth(false));
+				string helpBoxText = _validatorFillMethod == 0 ? "Random" : "By Floor";
+				EditorStyles.helpBox.fixedWidth = GUI.skin.label.CalcSize(new GUIContent(helpBoxText)).x;
+				EditorGUILayout.HelpBox(new GUIContent(helpBoxText));
+				EditorGUILayout.EndHorizontal();
+
 				EditorGUILayout.BeginHorizontal();
 				EditorGUI.BeginDisabledGroup(!_validatorEnabled);
 				if (GUILayout.Button("Validate"))
@@ -384,12 +406,12 @@ namespace Editor
 					_exporter = new Exporter(_boardEditor.Tiles(),
 							new Vector3(_boardWidth, _boardHeight, _floorEditor.FloorsQuantity));
 					_exporter.Validate();
+					if (_exporter.CanBeExported)
+					{
+						_exporter.SaveTemp(_validatorFillMethod);
+						PlayerPrefs.SetInt("LevelSelected", 99999);
+					}
 				}
-				EditorGUI.EndDisabledGroup();
-
-				EditorGUI.BeginDisabledGroup(_exporter == null || (_exporter != null && !_exporter.canBeExported));
-				if (GUILayout.Button("Test Level"))
-					_exporter?.SaveTemp();
 				EditorGUI.EndDisabledGroup();
 				EditorGUILayout.EndHorizontal();
 			}
@@ -398,10 +420,10 @@ namespace Editor
 		private void InvalidateExporter()
 		{
 			if (_exporter != null)
-				_exporter.canBeExported = false;
+				_exporter.CanBeExported = false;
 		}
 
-		private void SaveMenu()
+		private void ExporterMenu()
 		{
 			SeparateMenu();
 
@@ -443,10 +465,10 @@ namespace Editor
 
 				EditorGUILayout.Separator();
 
+				EditorGUI.BeginDisabledGroup(!_validatorEnabled);
 				if (GUILayout.Button("Save"))
-				{
-					//TODO: Implement Save
-				}
+					_exporter?.Save(_levelNumber, _fillMethod, _savePath);
+				EditorGUI.EndDisabledGroup();
 
 				EditorGUILayout.Separator();
 			}

@@ -19,7 +19,7 @@ namespace Game
 
 		private GameState _gameState;
 
-		private void Awake()
+		private void Start()
 		{
 			_gameState = GameState.Default;
 			_audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();

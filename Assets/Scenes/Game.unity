@@ -1504,6 +1504,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1026691589}
   - component: {fileID: 1026691588}
+  - component: {fileID: 1026691590}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1539,6 +1540,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1026691590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1026691587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d657369c66d4e49e4b9baae128a33226, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioManager: {fileID: 9190958462941012362, guid: b92626307d4364372bf3403322f982f5,
+    type: 3}
 --- !u!1 &1064561588
 GameObject:
   m_ObjectHideFlags: 0
@@ -2666,11 +2681,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f250772c22bbe49deb5af8c31b0217c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileGameObject: {fileID: 5943988702286095783, guid: 1ac714296dc904340965688456930bd7,
-    type: 3}
-  boardGameObject: {fileID: 592605297}
-  tileShift: 0.07
-  zGap: 0.02
 --- !u!114 &1881300062
 MonoBehaviour:
   m_ObjectHideFlags: 0

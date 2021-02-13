@@ -11,7 +11,7 @@ namespace Game
 
 		private AudioManager _audioManager;
 
-		private void Awake()
+		private void Start()
 		{
 			_audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
 		}
