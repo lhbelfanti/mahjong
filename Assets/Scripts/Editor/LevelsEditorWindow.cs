@@ -102,20 +102,25 @@ namespace Editor
 
 		public void OnGUI()
 		{
-			if (OnGUIActive)
+			if (!OnGUIActive)
 			{
-				_scrollPos = EditorGUILayout.BeginScrollView(_scrollPos);
-
-				EditorGUILayout.Separator();
-				ScriptsMenu();
-				BoardSpecificationsMenu();
-				FloorsMenu();
-				TilesMenu();
-				ValidatorMenu();
-				ExporterMenu();
-
-				EditorGUILayout.EndScrollView();
+				if (GUILayout.Button("Activate Menus"))
+					OnGUIActive = true;
+				return;
 			}
+
+
+			_scrollPos = EditorGUILayout.BeginScrollView(_scrollPos);
+
+			EditorGUILayout.Separator();
+			ScriptsMenu();
+			BoardSpecificationsMenu();
+			FloorsMenu();
+			TilesMenu();
+			ValidatorMenu();
+			ExporterMenu();
+
+			EditorGUILayout.EndScrollView();
 		}
 
 		private void ScriptsMenu()
