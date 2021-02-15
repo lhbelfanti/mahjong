@@ -40,16 +40,16 @@ namespace LevelEditor
 			foreach (EditorTile et in _editorTiles)
 			{
 				ITileValidator tileValidator;
-				switch (et.state)
+				switch (et.type)
 				{
-					case TileCreator.TileStates.Single:
+					case TileCreator.TileTypes.Single:
 						tileValidator = new SingleTileValidator(_tiles, et);
 						if (!tileValidator.Validate())
 							CanBeExported = false;
 
 						_tiles[et.x, et.y, et.floor] = 1;
 						break;
-					case TileCreator.TileStates.DoubleH:
+					case TileCreator.TileTypes.DoubleH:
 						tileValidator = new DoubleHTileValidator(_tiles, et);
 						if (!tileValidator.Validate())
 							CanBeExported = false;
@@ -57,7 +57,7 @@ namespace LevelEditor
 						_tiles[et.x, et.y, et.floor] = 2;
 						_tiles[et.x + 1, et.y, et.floor] = 2;
 						break;
-					case TileCreator.TileStates.DoubleV:
+					case TileCreator.TileTypes.DoubleV:
 						tileValidator = new DoubleVTileValidator(_tiles, et);
 						if (!tileValidator.Validate())
 							CanBeExported = false;
@@ -75,6 +75,7 @@ namespace LevelEditor
 		public void SaveTemp(int fillType)
 		{
 			Save(EditorLevelNum, fillType, "");
+			PlayerPrefs.SetInt("LevelSelected", 99999);
 		}
 
 		public void Save(int level, int fillType, string path)

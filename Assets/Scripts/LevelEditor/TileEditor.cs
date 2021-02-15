@@ -12,29 +12,33 @@ namespace LevelEditor
 		private int _selectedFloor;
 		private Vector2 _boardSize;
 
-		public GameObject CreateTile(TileCreator.TileStates id, int selectedFloor, Vector2 boardSize)
+		public GameObject CreateTile(TileCreator.TileTypes type, int selectedFloor, Vector2 boardSize, int x = 0, int y = 0)
 		{
 			_selectedFloor = selectedFloor;
 			_boardSize = boardSize;
 
+			Rect rect = gridCell.rect;
+			float xOffset = x * (rect.width + GridEditor.Gap);
+			float yOffset = y * (rect.height + GridEditor.Gap);
+
 			GameObject tile = null;
-			switch (id)
+			switch (type)
 			{
-				case TileCreator.TileStates.Single:
-					tile = InstantiateTile(TileCreator.TileStates.Single);
+				case TileCreator.TileTypes.Single:
+					tile = InstantiateTile(TileCreator.TileTypes.Single, xOffset, -yOffset);
 					break;
-				case TileCreator.TileStates.DoubleH:
-					tile = InstantiateTile(TileCreator.TileStates.DoubleH, gridCell.rect.width / 2);
+				case TileCreator.TileTypes.DoubleH:
+					tile = InstantiateTile(TileCreator.TileTypes.DoubleH, xOffset + rect.width / 2, -yOffset);
 					break;
-				case TileCreator.TileStates.DoubleV:
-					tile = InstantiateTile(TileCreator.TileStates.DoubleV, 0f, -(gridCell.rect.height / 2));
+				case TileCreator.TileTypes.DoubleV:
+					tile = InstantiateTile(TileCreator.TileTypes.DoubleV, xOffset, -(yOffset + rect.height / 2));
 					break;
 			}
 
 			return tile;
 		}
 
-		private GameObject InstantiateTile(TileCreator.TileStates state, float xOffset = 0f, float yOffset = 0f)
+		private GameObject InstantiateTile(TileCreator.TileTypes type, float xOffset = 0f, float yOffset = 0f)
 		{
 			GameObject floor = GameObject.Find($"Floor {_selectedFloor.ToString()}");
 			GameObject tile = Instantiate(boardTile, floor.transform, true);
@@ -44,10 +48,10 @@ namespace LevelEditor
 			Snap snapScript = tile.GetComponent<Snap>();
 			snapScript.EditorTile = tile.GetComponent<EditorTile>();
 			snapScript.EditorTile.floor = _selectedFloor;
-			snapScript.EditorTile.state = state;
+			snapScript.EditorTile.type = type;
 			snapScript.GridCell = gridCell;
 			snapScript.BoardSize(_boardSize);
-
+			snapScript.OnDrawGizmos();
 
 			Selection.activeGameObject = tile;
 

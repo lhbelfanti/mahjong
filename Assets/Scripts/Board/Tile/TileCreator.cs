@@ -11,7 +11,7 @@ namespace Board.Tile
 		[SerializeField] private float tileShift;
 		[SerializeField] private float zGap;
 
-		public enum TileStates
+		public enum TileTypes
 		{
 			Empty = 0,
 			Single = 1,
@@ -21,10 +21,10 @@ namespace Board.Tile
 			DummyV = 5
 		}
 
-		public Tile CreateTile(Vector3 index, bool isMiddleTile, TileStates state = TileStates.Single, bool fakeMiddle = false)
+		public Tile CreateTile(Vector3 index, bool isMiddleTile, TileTypes type = TileTypes.Single, bool fakeMiddle = false)
 		{
 			index.ToInts(out int x, out int y, out int floor);
-			Vector2 pos = GetTilePosition(index, state);
+			Vector2 pos = GetTilePosition(index, type);
 
 			Tile tile = Instantiate(tileGameObject, new Vector3(pos.x, pos.y, -floor * zGap), Quaternion.identity);
 			if (!Floors[floor])
@@ -34,10 +34,10 @@ namespace Board.Tile
 			}
 			tile.transform.SetParent(Floors[floor].transform);
 			tile.Index = index;
-			tile.State = state;
+			tile.Type = type;
 			tile.transform.name = $"({x.ToString()}x{y.ToString()})-{floor.ToString()}";
 
-			if (state == TileStates.DummyH || state == TileStates.DummyV)
+			if (type == TileTypes.DummyH || type == TileTypes.DummyV)
 			{
 				tile.transform.name += "-Extra";
 				tile.gameObject.SetActive(false);
@@ -54,7 +54,7 @@ namespace Board.Tile
 			return tile;
 		}
 
-		private Vector2 GetTilePosition(Vector3 index, TileStates state = TileStates.Single)
+		private Vector2 GetTilePosition(Vector3 index, TileTypes type = TileTypes.Single)
 		{
 			index.ToInts(out int x, out int y, out int floor);
 			Rect tileRect = tileGameObject.GetComponent<RectTransform>().rect;
@@ -62,9 +62,9 @@ namespace Board.Tile
 
 			float xPos;
 			float yPos;
-			switch (state)
+			switch (type)
 			{
-				case TileStates.DoubleH:
+				case TileTypes.DoubleH:
 					bool shouldShiftX = ShouldShiftTileX(index, out Tile bottomTile);
 					xPos = boardPos.x + tileRect.width * x + tileRect.width / 2 -
 					       (shouldShiftX ? tileShift * (int) bottomTile.Index.z : 0);
@@ -72,7 +72,7 @@ namespace Board.Tile
 					yPos = boardPos.y - tileRect.height * y + tileShift * y -
 					       (shouldShiftY ? tileRect.height / 2 : 0);
 					break;
-				case TileStates.DoubleV:
+				case TileTypes.DoubleV:
 					xPos = boardPos.x + tileRect.width * x - tileShift * floor;
 					yPos = boardPos.y - tileRect.height * y - tileRect.height / 2 + tileShift * y;
 					break;
@@ -99,7 +99,7 @@ namespace Board.Tile
 			if (floor != 0 && BoardTiles[x, y, floor - 1])
 			{
 				Tile dummyH = BoardTiles[x + 1, y, floor - 1];
-				if (x <= boardSize - 1 && dummyH && dummyH.State == TileStates.DummyH)
+				if (x <= boardSize - 1 && dummyH && dummyH.Type == TileTypes.DummyH)
 				{
 					bottomTile = BoardTiles[x, y, floor - 1];
 					return true;
@@ -114,7 +114,7 @@ namespace Board.Tile
 		{
 			index.ToInts(out int x, out int y, out int floor);
 
-			if (floor != 0 && BoardTiles[x, y, floor - 1] && BoardTiles[x, y, floor - 1].State == TileStates.DoubleV)
+			if (floor != 0 && BoardTiles[x, y, floor - 1] && BoardTiles[x, y, floor - 1].Type == TileTypes.DoubleV)
 				return true;
 
 			return false;

@@ -12,20 +12,20 @@ namespace LevelEditor
 		[HideInInspector]
 		public int floor;
 		[HideInInspector]
-		public TileCreator.TileStates state;
+		public TileCreator.TileTypes type;
 
 		public string Name()
 		{
 			string newName = $"{y.ToString()}x{x.ToString()} - ";
-			switch (state)
+			switch (type)
 			{
-				case TileCreator.TileStates.Single:
+				case TileCreator.TileTypes.Single:
 					newName += "Single";
 					break;
-				case TileCreator.TileStates.DoubleH:
+				case TileCreator.TileTypes.DoubleH:
 					newName += "DoubleH";
 					break;
-				case TileCreator.TileStates.DoubleV:
+				case TileCreator.TileTypes.DoubleV:
 					newName += "DoubleV";
 					break;
 			}

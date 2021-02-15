@@ -13,6 +13,8 @@ namespace LevelEditor
 			GameObject floor = new GameObject($"Floor {_floorsQuantity.ToString()}");
 			floor.transform.parent = floorsContainer;
 			_floorsQuantity++;
+
+			SelectedFloor = SelectedFloor == -1 ? FloorsQuantity - 1 : SelectedFloor;
 		}
 
 		public void RemoveFloor(int floorIndex)
@@ -30,6 +32,8 @@ namespace LevelEditor
 			}
 
 			_floorsQuantity--;
+
+			SelectedFloor = SelectedFloor == floorIndex ? -1 : SelectedFloor;
 		}
 
 		public void RemoveAllFloors()

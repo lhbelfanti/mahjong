@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using TileStates = Board.Tile.TileCreator.TileStates;
 
 namespace Board.Tile
 {
@@ -62,7 +61,7 @@ namespace Board.Tile
 		}
 
 		public string Id { get; set; }
-		public TileStates State { get; set; }
+		public TileCreator.TileTypes Type { get; set; }
 		public Vector3 Index { get; set; }
 	}
 }

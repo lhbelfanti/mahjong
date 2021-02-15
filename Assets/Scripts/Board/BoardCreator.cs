@@ -6,7 +6,6 @@ using LevelEditor;
 using UnityEngine;
 using Utils;
 using Vector3 = UnityEngine.Vector3;
-using TileStates = Board.Tile.TileCreator.TileStates;
 
 namespace Board
 {
@@ -54,38 +53,38 @@ namespace Board
 					for (int k = 0; k < tiles.Count; k++)
 					{
 						bool isMiddleTile = IsMiddleTile(k, j, f);
-						int state = tiles[k];
-						switch (state)
+						int type = tiles[k];
+						switch (type)
 						{
 							// Handling the empty case. Should not create a tile.
-							case (int) TileStates.Empty:
+							case (int) TileCreator.TileTypes.Empty:
 								_boardTiles[k, j, f] = null;
 								break;
 							// Handling the basic case
-							case (int) TileStates.Single:
+							case (int) TileCreator.TileTypes.Single:
 								_boardTiles[k, j, f] = _tileCreator.CreateTile(new Vector3(k, j, f), isMiddleTile);
 								break;
 							// Handling the case where the tile should be over 2 other tiles (in the middle horizontally)
-							case (int) TileStates.DoubleH:
+							case (int) TileCreator.TileTypes.DoubleH:
 							{
 								_boardTiles[k, j, f] = _tileCreator.CreateTile(new Vector3(k, j, f), isMiddleTile,
-									TileStates.DoubleH);
+									TileCreator.TileTypes.DoubleH);
 								_boardTiles[k + 1, j, f] = _tileCreator.CreateTile(new Vector3(k + 1, j, f), isMiddleTile,
-									TileStates.DummyH);
+									TileCreator.TileTypes.DummyH);
 								SelectMiddleTile(IsMiddleTile(k + 1, j, f), k + 1, j, f);
 								k++;
 								break;
 							}
 							// Handling the case where the tile should be over 2 other tiles (in the middle vertically)
-							case (int) TileStates.DoubleV:
+							case (int) TileCreator.TileTypes.DoubleV:
 							{
 								Tile.Tile firstVTile = j - 1 >= 0 ? _boardTiles[k, j - 1, f] : null;
-								if (!firstVTile || (firstVTile && firstVTile.State != TileStates.DoubleV))
+								if (!firstVTile || (firstVTile && firstVTile.Type != TileCreator.TileTypes.DoubleV))
 								{
 									_boardTiles[k, j, f] = _tileCreator.CreateTile(new Vector3(k, j, f), isMiddleTile,
-										TileStates.DoubleV);
+										TileCreator.TileTypes.DoubleV);
 									_boardTiles[k, j + 1, f] = _tileCreator.CreateTile(new Vector3(k,  j + 1, f), isMiddleTile,
-										TileStates.DummyV);
+										TileCreator.TileTypes.DummyV);
 									SelectMiddleTile(IsMiddleTile(k, j + 1, f), k + 1, j, f);
 								}
 								break;
@@ -130,12 +129,12 @@ namespace Board
 				Tile.Tile middleTile = _boardTiles[k, j, f];
 				if (!middleTile)
 					_boardTiles[k, j, f] = _tileCreator.CreateTile(new Vector3(k, j, f),
-						true, TileStates.Single, true);
+						true, TileCreator.TileTypes.Single, true);
 
 				middleTile = _boardTiles[k, j, f];
-				if (middleTile.State == TileStates.DummyH)
+				if (middleTile.Type == TileCreator.TileTypes.DummyH)
 					_middleTile = _boardTiles[k - 1, j, f];
-				else if (middleTile.State == TileStates.DummyV)
+				else if (middleTile.Type == TileCreator.TileTypes.DummyV)
 					_middleTile = _boardTiles[k, j - 1, f];
 				else
 					_middleTile = _boardTiles[k, j, f];

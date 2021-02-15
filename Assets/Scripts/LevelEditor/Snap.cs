@@ -5,6 +5,9 @@ namespace LevelEditor
 {
 	public class Snap : MonoBehaviour
 	{
+		private const int Smooth = 10;
+		private const float BoundFixer = 0.00001f;
+
 		private RectTransform _gridCell;
 		private EditorTile _editorTile;
 
@@ -13,10 +16,9 @@ namespace LevelEditor
 		private Vector2[] _heightBound;
 		private bool _boundsSet;
 
-		private int _smoothCounter;
-		private const int Smooth = 10;
+		private int _smoothCounter = Smooth;
 
-		private void OnDrawGizmos()
+		public void OnDrawGizmos()
 		{
 			if (_boundsSet && _smoothCounter == Smooth)
 			{
@@ -36,13 +38,13 @@ namespace LevelEditor
 			_widthBound = new Vector2[(int) _boardSize.x];
 			_heightBound = new Vector2[(int) _boardSize.y];
 
-			switch (_editorTile.state)
+			switch (_editorTile.type)
 			{
-				case TileCreator.TileStates.DoubleH:
+				case TileCreator.TileTypes.DoubleH:
 					_widthBound = new Vector2[(int) _boardSize.x - 1];
 					xOffset = rect.width / 2;
 					break;
-				case TileCreator.TileStates.DoubleV:
+				case TileCreator.TileTypes.DoubleV:
 					_heightBound = new Vector2[(int) _boardSize.y - 1];
 					yOffset = rect.height / 2;
 					break;
@@ -50,9 +52,10 @@ namespace LevelEditor
 
 			for (int i = 0; i < _widthBound.Length; i++)
 			{
-				float leftBound = i == 0 ? rect.width * i + xOffset: _widthBound[i - 1].y;
+				bool first = i == 0;
+				float leftBound = first ? rect.width * i + xOffset: _widthBound[i - 1].y;
 				float rightBound = leftBound + (i != _widthBound.Length - 1 ? rect.width + GridEditor.Gap : rect.width);
-				_widthBound[i] = new Vector2(leftBound, rightBound);
+				_widthBound[i] = new Vector2(leftBound, first ? rightBound : rightBound + BoundFixer);
 			}
 
 			for (int i = 0; i < _heightBound.Length; i++)

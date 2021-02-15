@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using Board.Tile;
 using Game;
 using UnityEngine;
 using Utils;
-using TileStates = Board.Tile.TileCreator.TileStates;
 
 namespace Board
 {
@@ -25,7 +25,7 @@ namespace Board
 
 			GetNeighbours(index, out Tile.Tile top, out Tile.Tile right, out Tile.Tile left);
 
-			if (!top && (!right || !left || right.State == TileStates.DummyH))
+			if (!top && (!right || !left || right.Type == TileCreator.TileTypes.DummyH))
 				return true;
 
 			return false;
@@ -67,9 +67,9 @@ namespace Board
 			{
 				tile.Index.ToInts(out int x, out int y, out int z);
 				boardTiles[x, y, z] = null;
-				if (tile.State == TileStates.DoubleH) // Removing the dummy tile
+				if (tile.Type == TileCreator.TileTypes.DoubleH) // Removing the dummy tile
 					boardTiles[x + 1, y, z] = null;
-				else if (tile.State == TileStates.DoubleV) // Removing the dummy tile
+				else if (tile.Type == TileCreator.TileTypes.DoubleV) // Removing the dummy tile
 					boardTiles[x, y + 1, z] = null;
 			}
 
@@ -103,7 +103,7 @@ namespace Board
 			Tile.Tile[,,] boardTiles = _boardCreator.BoardTiles;
 			foreach (Tile.Tile tile in boardTiles)
 			{
-				if (tile && tile.State != TileStates.DummyH && CanBeSelected(tile))
+				if (tile && tile.Type != TileCreator.TileTypes.DummyH && CanBeSelected(tile))
 					_availableMoves.Add(tile);
 			}
 		}

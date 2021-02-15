@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using Board.Tile;
 using UnityEngine;
 using Utils;
 using Random = System.Random;
-using TileStates = Board.Tile.TileCreator.TileStates;
 
 namespace Board
 {
@@ -69,9 +69,9 @@ namespace Board
 				{
 
 					Tile.Tile tile = c.GetComponent<Tile.Tile>();
-					if (tile.State == TileStates.Single ||
-					    tile.State == TileStates.DoubleH ||
-					    tile.State == TileStates.DoubleV)
+					if (tile.Type == TileCreator.TileTypes.Single ||
+					    tile.Type == TileCreator.TileTypes.DoubleH ||
+					    tile.Type == TileCreator.TileTypes.DoubleV)
 					{
 						tiles.Add(tile);
 					}
@@ -90,9 +90,9 @@ namespace Board
 				foreach (GameObject c in children)
 				{
 					Tile.Tile tile = c.GetComponent<Tile.Tile>();
-					if (tile.State == TileStates.Single ||
-					    tile.State == TileStates.DoubleH ||
-					    tile.State == TileStates.DoubleV)
+					if (tile.Type == TileCreator.TileTypes.Single ||
+					    tile.Type == TileCreator.TileTypes.DoubleH ||
+					    tile.Type == TileCreator.TileTypes.DoubleV)
 					{
 						tiles.Add(tile);
 					}

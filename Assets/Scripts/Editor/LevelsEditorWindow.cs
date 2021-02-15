@@ -11,7 +11,7 @@ namespace Editor
 {
 	public class LevelsEditorWindow : EditorWindow
 	{
-		public static bool OnGUIActive = false;
+		public static bool OnGUIActive;
 
 		private Vector2 _scrollPos;
 
@@ -21,6 +21,9 @@ namespace Editor
 		private BoardEditor _boardEditor;
 		private FloorEditor _floorEditor;
 		private TileEditor _tileEditor;
+
+		// Importer
+		private bool _showImporterMenu = true;
 
 		// Board
 		private bool _showBoardMenu = true;
@@ -111,15 +114,17 @@ namespace Editor
 
 
 			_scrollPos = EditorGUILayout.BeginScrollView(_scrollPos);
-
 			EditorGUILayout.Separator();
+
 			ScriptsMenu();
+			ImporterMenu();
 			BoardSpecificationsMenu();
 			FloorsMenu();
 			TilesMenu();
 			ValidatorMenu();
 			ExporterMenu();
 
+			EditorGUILayout.Separator();
 			EditorGUILayout.EndScrollView();
 		}
 
@@ -132,6 +137,45 @@ namespace Editor
 				_boardEditor = EditorGUILayout.ObjectField(_boardEditor, typeof(BoardEditor), true) as BoardEditor;
 				_floorEditor = EditorGUILayout.ObjectField(_floorEditor, typeof(FloorEditor), true) as FloorEditor;
 				_tileEditor = EditorGUILayout.ObjectField(_tileEditor, typeof(TileEditor), true) as TileEditor;
+			}
+		}
+
+		private void ImporterMenu()
+		{
+			SeparateMenu();
+
+			_showImporterMenu = EditorGUILayout.Foldout(_showImporterMenu, "Importer");
+			if (_showImporterMenu)
+			{
+				if (GUILayout.Button("Import Level"))
+				{
+					string path = EditorUtility.OpenFilePanel("Search for a level file", _defaultPath, "json");
+					if (path.Length != 0)
+					{
+						Importer importer = new Importer(_gridEditor, _boardEditor, _floorEditor, _tileEditor);
+						if (_validatorEnabled && EditorUtility.DisplayDialog("Do you want to save the current level?",
+							"It will be saved in the editor temporary file and if you want to save it with another " +
+							"name you'll have to import it again and save it.", "Yes", "Cancel"))
+						{
+							_exporter = new Exporter(_boardEditor.Tiles(),
+								new Vector3(_boardWidth, _boardHeight, _floorEditor.FloorsQuantity));
+							_exporter.Validate();
+							if (_exporter.CanBeExported)
+							{
+								_exporter.SaveTemp(_validatorFillMethod);
+								ClearBoard();
+								importer.ImportLevel(path);
+							}
+							else
+								Debug.LogError("If you want to save the current level, the errors must be fixed.");
+						}
+						else
+						{
+							ClearBoard();
+							importer.ImportLevel(path);
+						}
+					}
+				}
 			}
 		}
 
@@ -159,17 +203,23 @@ namespace Editor
 						"It will delete all the floors and tiles. All the progress you've not saved will be lost.",
 						"Yes", "Cancel"))
 					{
-						_gridEditor.ClearGrid();
-						_gridCreated = false;
-						_boardEditor.RemoveAllTiles();
-						_floorEditor.RemoveAllFloors();
-						InvalidateExporter();
-						_validatorEnabled = false;
+						ClearBoard();
 					}
 				}
 
 				EditorGUILayout.EndHorizontal();
 			}
+		}
+
+		private void ClearBoard()
+		{
+			_gridEditor.ClearGrid();
+			_gridCreated = false;
+			_boardEditor.RemoveAllTiles();
+			_floorEditor.RemoveAllFloors();
+			InvalidateExporter();
+			_validatorEnabled = false;
+			Utils.Utils.ClearConsole();
 		}
 
 		private void FloorsMenu()
@@ -191,13 +241,12 @@ namespace Editor
 					if (_floorsToggle[i])
 						UnselectFloors(i);
 
-					_activeFloors[i] = GUILayout.Toggle(_activeFloors[i], $"Active");
+					_activeFloors[i] = GUILayout.Toggle(_activeFloors[i], "Active");
 					SelectFloor(i);
 
 					if (GUILayout.Button("Remove", GUILayout.Width(150)))
 					{
 						_floorEditor.RemoveFloor(i);
-						_floorEditor.SelectedFloor = _floorEditor.SelectedFloor == i ? -1 : _floorEditor.SelectedFloor;
 						_boardEditor.RemoveTilesInFloor(i);
 						_deletedFloor = i;
 						_deletedTileSubmenu = i;
@@ -213,8 +262,7 @@ namespace Editor
 				if (GUILayout.Button("Add Floor"))
 				{
 					_floorEditor.AddNewFloor();
-					_floorEditor.SelectedFloor = _floorEditor.SelectedFloor == -1 ?
-						_floorEditor.FloorsQuantity - 1 : _floorEditor.SelectedFloor;
+
 					InvalidateExporter();
 				}
 				EditorGUI.EndDisabledGroup();
@@ -282,13 +330,13 @@ namespace Editor
 				EditorGUI.BeginDisabledGroup(_floorEditor.SelectedFloor == -1);
 				EditorGUILayout.BeginHorizontal();
 				if (GUILayout.Button("Normal"))
-					CreateTile(TileCreator.TileStates.Single);
+					CreateTile(TileCreator.TileTypes.Single);
 
 				if (GUILayout.Button("Double Horizontal"))
-					CreateTile(TileCreator.TileStates.DoubleH);
+					CreateTile(TileCreator.TileTypes.DoubleH);
 
 				if (GUILayout.Button("Double Vertical"))
-					CreateTile(TileCreator.TileStates.DoubleV);
+					CreateTile(TileCreator.TileTypes.DoubleV);
 
 				EditorGUILayout.EndHorizontal();
 				EditorGUI.EndDisabledGroup();
@@ -378,9 +426,9 @@ namespace Editor
 			return newStyle;
 		}
 
-		private void CreateTile(TileCreator.TileStates id)
+		private void CreateTile(TileCreator.TileTypes type)
 		{
-			GameObject tile = _tileEditor.CreateTile(id, _floorEditor.SelectedFloor, new Vector2(_boardWidth, _boardHeight));
+			GameObject tile = _tileEditor.CreateTile(type, _floorEditor.SelectedFloor, new Vector2(_boardWidth, _boardHeight));
 			EditorTile et = tile.GetComponent<EditorTile>();
 			_boardEditor.AddTile(et);
 
@@ -412,10 +460,7 @@ namespace Editor
 							new Vector3(_boardWidth, _boardHeight, _floorEditor.FloorsQuantity));
 					_exporter.Validate();
 					if (_exporter.CanBeExported)
-					{
 						_exporter.SaveTemp(_validatorFillMethod);
-						PlayerPrefs.SetInt("LevelSelected", 99999);
-					}
 				}
 				EditorGUI.EndDisabledGroup();
 				EditorGUILayout.EndHorizontal();
@@ -452,14 +497,12 @@ namespace Editor
 
 				SeparateSubMenu();
 
-				string description = "Level Number: ";
-				EditorGUIUtility.labelWidth = GUI.skin.label.CalcSize(new GUIContent(description)).x;
+				string description = "Level Num: ";
 				_levelNumber = EditorGUILayout.IntField(description,
 					Mathf.Clamp(_levelNumber, -1,10000),
 					GUILayout.ExpandWidth(false));
 
 				EditorGUILayout.BeginHorizontal();
-				EditorGUIUtility.labelWidth = GUI.skin.label.CalcSize(new GUIContent(description)).x;
 				_fillMethod = EditorGUILayout.IntField("Fill Method: ",
 					Mathf.Clamp(_fillMethod, 0, Enum.GetNames(typeof(BoardImages.FillMethod)).Length - 1),
 					GUILayout.ExpandWidth(false));
