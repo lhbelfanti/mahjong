@@ -32,7 +32,9 @@ namespace LevelEditor
 			List<LevelInfo> levelInfo = levelData.data;
 
 			_boardInfo.GetBoardSpecs(levelInfo, out int tc);
-			_gridEditor.CreateGrid((int) _boardInfo.BoardSize.x, (int) _boardInfo.BoardSize.y);
+			_gridEditor.Width = (int) _boardInfo.BoardSize.x;
+			_gridEditor.Height = (int) _boardInfo.BoardSize.y;
+			_gridEditor.CreateGrid();
 
 			for (int i = 0; i < levelInfo.Count; i++)
 			{
@@ -47,7 +49,7 @@ namespace LevelEditor
 						TileCreator.TileTypes state = (TileCreator.TileTypes) tiles[k];
 						if (state == TileCreator.TileTypes.Empty)
 							continue;
-						GameObject tile = _tileEditor.CreateTile(state, f, _boardInfo.BoardSize, k, j);
+						GameObject tile = _tileEditor.CreateTile(state, f, k, j);
 						EditorTile editorTile = tile.GetComponent<EditorTile>();
 						_boardEditor.AddTile(editorTile);
 					}

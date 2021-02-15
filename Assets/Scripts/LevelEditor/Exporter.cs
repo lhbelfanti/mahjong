@@ -2,24 +2,26 @@
 using Board.Tile;
 using Level;
 using UnityEngine;
-using Utils;
 
 namespace LevelEditor
 {
 	public class Exporter
 	{
 		private int[,,] _tiles;
-		private readonly Vector3 _dimensions;
 		private readonly List<EditorTile> _editorTiles;
+		private readonly GridEditor _gridEditor;
+		private readonly FloorEditor _floorEditor;
 
 		public bool CanBeExported;
 
 		public const int EditorLevelNum = 99999;
 		public const string EditorLevelPath = "Text/editorLevel";
 
-		public Exporter(List<EditorTile> editorTiles, Vector3 dimensions)
+
+		public Exporter(List<EditorTile> editorTiles, GridEditor gridEditor, FloorEditor floorEditor)
 		{
-			_dimensions = dimensions;
+			_gridEditor = gridEditor;
+			_floorEditor = floorEditor;
 			_editorTiles = editorTiles;
 		}
 
@@ -34,8 +36,7 @@ namespace LevelEditor
 				Debug.LogError("The number of tiles must be even.");
 			}
 
-			_dimensions.ToInts(out int width, out int height, out int floors);
-			_tiles = new int[width, height, floors];
+			_tiles = new int[_gridEditor.Height, _gridEditor.Width, _floorEditor.FloorsQuantity];
 
 			foreach (EditorTile et in _editorTiles)
 			{
@@ -67,9 +68,6 @@ namespace LevelEditor
 						break;
 				}
 			}
-
-			if (CanBeExported)
-				Debug.Log("Validation Successful!");
 		}
 
 		public void SaveTemp(int fillType)
@@ -80,24 +78,23 @@ namespace LevelEditor
 
 		public void Save(int level, int fillType, string path)
 		{
-			_dimensions.ToInts(out int width, out int height, out int floors);
 			LevelData levelData = new LevelData();
 			levelData.level = level;
 			levelData.fillMethod = fillType;
 			levelData.data = new List<LevelInfo>();
 
-			for (int f = 0; f < floors; f++)
+			for (int f = 0; f < _floorEditor.FloorsQuantity; f++)
 			{
 				LevelInfo levelInfo = new LevelInfo();
 				levelInfo.floor = f;
 				levelInfo.rows = new List<LevelTiles>();
-				for (int w = 0; w < width; w++)
+				for (int h = 0; h < _gridEditor.Height; h++)
 				{
 					LevelTiles levelTiles = new LevelTiles();
 					levelTiles.tiles = new List<int>();
-					for (int h = 0; h < height; h++)
+					for (int w = 0; w < _gridEditor.Width; w++)
 					{
-						levelTiles.tiles.Add(_tiles[w, h, f]);
+						levelTiles.tiles.Add(_tiles[h, w, f]);
 					}
 
 					levelInfo.rows.Add(levelTiles);
@@ -106,7 +103,7 @@ namespace LevelEditor
 				levelData.data.Add(levelInfo);
 			}
 
-			string levelDataJson = JsonUtility.ToJson(levelData);
+			string levelDataJson = JsonUtility.ToJson(levelData, true);
 			string url = path == ""
 				? $"{Application.dataPath}/Resources/{EditorLevelPath}.json"
 				: $"{path}level{level.ToString()}.json";

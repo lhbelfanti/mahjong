@@ -7,11 +7,11 @@
 		}
 		public override bool Validate()
 		{
-			_initialMessage = $"Floor {_et.floor.ToString()} - {_et.y.ToString()}x{_et.x.ToString()} Single Tile:\n";
+			_initialMessage = $"Floor {_et.floor.ToString()} - {_et.x.ToString()}x{_et.y.ToString()} Single Tile:\n";
 
-			string msg1 = $"Error 1: There is already another tile in the position {_et.y.ToString()}x{_et.x.ToString()}.\n";
+			string msg1 = $"Error 1: There is already another tile in the position {_et.x.ToString()}x{_et.y.ToString()}.\n";
 
-			string msg2 = $"Error 2: Missing tile underneath it (in Floor {(_et.floor - 1).ToString()} - position {_et.y.ToString()}x{_et.x.ToString()}).\n";
+			string msg2 = $"Error 2: Missing tile underneath it (in Floor {(_et.floor - 1).ToString()} - position {_et.x.ToString()}x{_et.y.ToString()}).\n";
 
 			if (IsAnEmptyPosition(_et.x, _et.y, _et.floor, msg1) && ValidateUnderneathTile(msg2))
 				return true;

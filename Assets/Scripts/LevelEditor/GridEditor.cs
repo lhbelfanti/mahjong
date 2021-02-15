@@ -9,13 +9,13 @@ namespace LevelEditor
 
 		public static readonly float Gap = 0.1f;
 
-		public void CreateGrid(int width, int height)
+		public void CreateGrid()
 		{
 			ClearGrid();
 
-			for (int i = 0; i < width; i++)
+			for (int i = 0; i < Width; i++)
 			{
-				for (int j = 0; j < height; j++)
+				for (int j = 0; j < Height; j++)
 				{
 					Rect boardRect = gridCell.GetComponent<RectTransform>().rect;
 					GameObject cell = Instantiate(gridCell,
@@ -33,5 +33,8 @@ namespace LevelEditor
 				foreach(Transform child in grid)
 					DestroyImmediate(child.gameObject);
 		}
+
+		public int Width { get; set; }
+		public int Height { get; set; }
 	}
 }

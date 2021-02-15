@@ -6,12 +6,11 @@ namespace LevelEditor
 	public class Snap : MonoBehaviour
 	{
 		private const int Smooth = 10;
-		private const float BoundFixer = 0.00001f;
 
 		private RectTransform _gridCell;
 		private EditorTile _editorTile;
 
-		private Vector2 _boardSize;
+		private GridEditor _gridEditor;
 		private Vector2[] _widthBound;
 		private Vector2[] _heightBound;
 		private bool _boundsSet;
@@ -35,17 +34,17 @@ namespace LevelEditor
 			float xOffset = 0f;
 			float yOffset = 0f;
 
-			_widthBound = new Vector2[(int) _boardSize.x];
-			_heightBound = new Vector2[(int) _boardSize.y];
+			_widthBound = new Vector2[_gridEditor.Width];
+			_heightBound = new Vector2[_gridEditor.Height];
 
 			switch (_editorTile.type)
 			{
 				case TileCreator.TileTypes.DoubleH:
-					_widthBound = new Vector2[(int) _boardSize.x - 1];
+					_widthBound = new Vector2[_gridEditor.Width - 1];
 					xOffset = rect.width / 2;
 					break;
 				case TileCreator.TileTypes.DoubleV:
-					_heightBound = new Vector2[(int) _boardSize.y - 1];
+					_heightBound = new Vector2[_gridEditor.Height - 1];
 					yOffset = rect.height / 2;
 					break;
 			}
@@ -55,7 +54,7 @@ namespace LevelEditor
 				bool first = i == 0;
 				float leftBound = first ? rect.width * i + xOffset: _widthBound[i - 1].y;
 				float rightBound = leftBound + (i != _widthBound.Length - 1 ? rect.width + GridEditor.Gap : rect.width);
-				_widthBound[i] = new Vector2(leftBound, first ? rightBound : rightBound + BoundFixer);
+				_widthBound[i] = new Vector2(leftBound, rightBound);
 			}
 
 			for (int i = 0; i < _heightBound.Length; i++)
@@ -82,12 +81,12 @@ namespace LevelEditor
 			if (xPos < _widthBound[0].x)
 			{
 				xPos = _widthBound[0].x;
-				_editorTile.x = 0;
+				_editorTile.y = 0;
 			}
 			else if (xPos > _widthBound[_widthBound.Length - 1].x)
 			{
 				xPos = _widthBound[_widthBound.Length - 1].x;
-				_editorTile.x = _widthBound.Length - 1;
+				_editorTile.y = _widthBound.Length - 1;
 			}
 
 			if (xPos == x)
@@ -95,10 +94,10 @@ namespace LevelEditor
 				for (int i = 0; i < _widthBound.Length; i++)
 				{
 					Vector2 value = _widthBound[i];
-					if (xPos > value.x && xPos < value.y)
+					if (xPos >= value.x && xPos < value.y)
 					{
 						xPos = value.x;
-						_editorTile.x = i;
+						_editorTile.y = i;
 						break;
 					}
 				}
@@ -112,12 +111,12 @@ namespace LevelEditor
 			if (yPos > _heightBound[0].x)
 			{
 				yPos = _heightBound[0].x;
-				_editorTile.y = 0;
+				_editorTile.x = 0;
 			}
 			else if (yPos < _heightBound[_heightBound.Length - 1].x)
 			{
 				yPos = _heightBound[_heightBound.Length - 1].x;
-				_editorTile.y = _heightBound.Length - 1;
+				_editorTile.x = _heightBound.Length - 1;
 			}
 
 			if (yPos == y)
@@ -125,10 +124,10 @@ namespace LevelEditor
 				for (int i = 0; i < _heightBound.Length; i++)
 				{
 					Vector2 value = _heightBound[i];
-					if (yPos < value.x && yPos > value.y)
+					if (yPos <= value.x && yPos > value.y)
 					{
 						yPos = value.x;
-						_editorTile.y = i;
+						_editorTile.x = i;
 						break;
 					}
 				}
@@ -136,9 +135,14 @@ namespace LevelEditor
 			return yPos;
 		}
 
-		public void BoardSize(Vector2 value)
+		public void BoardSize(GridEditor gridEditor)
 		{
-			_boardSize = value;
+			_gridEditor = gridEditor;
+			SetBounds();
+		}
+
+		public void UpdateBounds()
+		{
 			SetBounds();
 		}
 

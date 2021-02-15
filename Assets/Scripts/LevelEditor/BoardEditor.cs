@@ -44,5 +44,11 @@ namespace LevelEditor
 		{
 			return _tiles.Count > 0 ? _tiles.OrderBy(o => o.floor).ThenBy(o => o.x).ToList() : _tiles;
 		}
+
+		public void UpdateTilesBounds()
+		{
+			foreach (var t in _tiles)
+				t.transform.GetComponent<Snap>().UpdateBounds();
+		}
 	}
 }

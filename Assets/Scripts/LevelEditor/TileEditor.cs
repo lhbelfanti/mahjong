@@ -10,12 +10,12 @@ namespace LevelEditor
 		[SerializeField] private RectTransform gridCell;
 
 		private int _selectedFloor;
-		private Vector2 _boardSize;
+		private GridEditor _gridEditor;
 
-		public GameObject CreateTile(TileCreator.TileTypes type, int selectedFloor, Vector2 boardSize, int x = 0, int y = 0)
+		public GameObject CreateTile(TileCreator.TileTypes type, int selectedFloor, int x = 0, int y = 0)
 		{
 			_selectedFloor = selectedFloor;
-			_boardSize = boardSize;
+			_gridEditor = transform.GetComponent<GridEditor>();
 
 			Rect rect = gridCell.rect;
 			float xOffset = x * (rect.width + GridEditor.Gap);
@@ -50,7 +50,7 @@ namespace LevelEditor
 			snapScript.EditorTile.floor = _selectedFloor;
 			snapScript.EditorTile.type = type;
 			snapScript.GridCell = gridCell;
-			snapScript.BoardSize(_boardSize);
+			snapScript.BoardSize(_gridEditor);
 			snapScript.OnDrawGizmos();
 
 			Selection.activeGameObject = tile;

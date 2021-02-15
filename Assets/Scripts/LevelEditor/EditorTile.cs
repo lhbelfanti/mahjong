@@ -16,7 +16,7 @@ namespace LevelEditor
 
 		public string Name()
 		{
-			string newName = $"{y.ToString()}x{x.ToString()} - ";
+			string newName = $"{x.ToString()}x{y.ToString()} - ";
 			switch (type)
 			{
 				case TileCreator.TileTypes.Single:

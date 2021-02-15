@@ -27,8 +27,6 @@ namespace Editor
 
 		// Board
 		private bool _showBoardMenu = true;
-		private int _boardWidth;
-		private int _boardHeight;
 		private bool _gridCreated;
 
 		// Floors
@@ -112,7 +110,6 @@ namespace Editor
 				return;
 			}
 
-
 			_scrollPos = EditorGUILayout.BeginScrollView(_scrollPos);
 			EditorGUILayout.Separator();
 
@@ -152,31 +149,36 @@ namespace Editor
 					string path = EditorUtility.OpenFilePanel("Search for a level file", _defaultPath, "json");
 					if (path.Length != 0)
 					{
-						Importer importer = new Importer(_gridEditor, _boardEditor, _floorEditor, _tileEditor);
 						if (_validatorEnabled && EditorUtility.DisplayDialog("Do you want to save the current level?",
 							"It will be saved in the editor temporary file and if you want to save it with another " +
 							"name you'll have to import it again and save it.", "Yes", "Cancel"))
 						{
-							_exporter = new Exporter(_boardEditor.Tiles(),
-								new Vector3(_boardWidth, _boardHeight, _floorEditor.FloorsQuantity));
+							_exporter = new Exporter(_boardEditor.Tiles(), _gridEditor, _floorEditor);
 							_exporter.Validate();
 							if (_exporter.CanBeExported)
 							{
 								_exporter.SaveTemp(_validatorFillMethod);
-								ClearBoard();
-								importer.ImportLevel(path);
+								ImportLevel(path);
 							}
 							else
-								Debug.LogError("If you want to save the current level, the errors must be fixed.");
+							{
+								EditorUtility.DisplayDialog("Validation error",
+									"If you want to save the current level, the errors must be fixed.", "Ok");
+							}
 						}
 						else
-						{
-							ClearBoard();
-							importer.ImportLevel(path);
-						}
+							ImportLevel(path);
 					}
 				}
 			}
+		}
+
+		private void ImportLevel(string path)
+		{
+			ClearBoard();
+			Importer importer = new Importer(_gridEditor, _boardEditor, _floorEditor, _tileEditor);
+			importer.ImportLevel(path);
+			_validatorEnabled = true;
 		}
 
 		private void BoardSpecificationsMenu()
@@ -186,15 +188,16 @@ namespace Editor
 			if (_showBoardMenu)
 			{
 				EditorGUILayout.Separator();
-				_boardWidth = EditorGUILayout.IntSlider(new GUIContent("Width"), _boardWidth, 1, 8);
-				_boardHeight = EditorGUILayout.IntSlider(new GUIContent("Height"), _boardHeight, 1, 7);
+				_gridEditor.Width = EditorGUILayout.IntSlider(new GUIContent("Width"), _gridEditor.Width, 1, 8);
+				_gridEditor.Height = EditorGUILayout.IntSlider(new GUIContent("Height"), _gridEditor.Height, 1, 7);
 
 				EditorGUILayout.Separator();
 				EditorGUILayout.BeginHorizontal();
 				if (GUILayout.Button("Create Board"))
 				{
-					_gridEditor.CreateGrid(_boardWidth, _boardHeight);
+					_gridEditor.CreateGrid();
 					_gridCreated = true;
+					_boardEditor.UpdateTilesBounds();
 				}
 
 				if (GUILayout.Button("Clear Board"))
@@ -428,7 +431,7 @@ namespace Editor
 
 		private void CreateTile(TileCreator.TileTypes type)
 		{
-			GameObject tile = _tileEditor.CreateTile(type, _floorEditor.SelectedFloor, new Vector2(_boardWidth, _boardHeight));
+			GameObject tile = _tileEditor.CreateTile(type, _floorEditor.SelectedFloor);
 			EditorTile et = tile.GetComponent<EditorTile>();
 			_boardEditor.AddTile(et);
 
@@ -456,11 +459,14 @@ namespace Editor
 				EditorGUI.BeginDisabledGroup(!_validatorEnabled);
 				if (GUILayout.Button("Validate"))
 				{
-					_exporter = new Exporter(_boardEditor.Tiles(),
-							new Vector3(_boardWidth, _boardHeight, _floorEditor.FloorsQuantity));
+					_exporter = new Exporter(_boardEditor.Tiles(), _gridEditor, _floorEditor);
 					_exporter.Validate();
 					if (_exporter.CanBeExported)
+					{
 						_exporter.SaveTemp(_validatorFillMethod);
+						EditorUtility.DisplayDialog("Validation Successful",
+							"The level was saved in a temp file.", "Ok");
+					}
 				}
 				EditorGUI.EndDisabledGroup();
 				EditorGUILayout.EndHorizontal();
@@ -515,7 +521,20 @@ namespace Editor
 
 				EditorGUI.BeginDisabledGroup(!_validatorEnabled);
 				if (GUILayout.Button("Save"))
-					_exporter?.Save(_levelNumber, _fillMethod, _savePath);
+				{
+					if (_exporter != null)
+					{
+						_exporter.Save(_levelNumber, _fillMethod, _savePath);
+						EditorUtility.DisplayDialog("Level saved",
+							"The level was successfully saved.", "Ok");
+					}
+					else
+					{
+						EditorUtility.DisplayDialog("Validation error",
+							"The level should be validated before saving it.", "Ok");
+					}
+				}
+
 				EditorGUI.EndDisabledGroup();
 
 				EditorGUILayout.Separator();
