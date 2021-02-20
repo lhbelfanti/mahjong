@@ -70,4 +70,4 @@ crashlytics-build.properties
 
 # Proyect files
 
-/[Aa]ssets/[Rr]esources/[Tt]ext/editorLevel.json
+/[Aa]ssets/[Rr]esources/[Tt]ext/editorLevel.*
