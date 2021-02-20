@@ -67,3 +67,7 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 .idea/
+
+# Proyect files
+
+/[Aa]ssets/[Rr]esources/[Tt]ext/editorLevel.json
