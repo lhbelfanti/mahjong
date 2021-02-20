@@ -21,6 +21,7 @@ namespace Editor
 		private BoardEditor _boardEditor;
 		private FloorEditor _floorEditor;
 		private TileEditor _tileEditor;
+		private bool _scriptsLoaded;
 
 		// Importer
 		private bool _showImporterMenu = true;
@@ -73,12 +74,8 @@ namespace Editor
 				_tileEditor = editor.GetComponent<TileEditor>();
 				_defaultPath = $"{Application.dataPath}/Resources/Text/";
 				_savePath = _defaultPath;
+				_scriptsLoaded = true;
 			}
-		}
-
-		public void OnInspectorUpdate()
-		{
-			Repaint();
 		}
 
 		private void SeparateMenu()
@@ -107,6 +104,12 @@ namespace Editor
 			{
 				if (GUILayout.Button("Activate Menus"))
 					OnGUIActive = true;
+				return;
+			}
+
+			if (!_scriptsLoaded)
+			{
+				OnEnable();
 				return;
 			}
 
@@ -197,7 +200,6 @@ namespace Editor
 				{
 					_gridEditor.CreateGrid();
 					_gridCreated = true;
-					_boardEditor.UpdateTilesBounds();
 				}
 
 				if (GUILayout.Button("Clear Board"))
@@ -228,9 +230,6 @@ namespace Editor
 		private void FloorsMenu()
 		{
 			SeparateMenu();
-
-			if (!_floorEditor)
-				OnEnable();
 
 			_showFloorsMenu = EditorGUILayout.Foldout(_showFloorsMenu, "Floors");
 			if (_showFloorsMenu)
@@ -446,12 +445,10 @@ namespace Editor
 			if (_showValidatorMenu)
 			{
 				EditorGUILayout.BeginHorizontal();
-				EditorGUIUtility.labelWidth = GUI.skin.label.CalcSize(new GUIContent("Fill Method: ")).x;
 				_validatorFillMethod = EditorGUILayout.IntField("Fill Method: ",
 					Mathf.Clamp(_validatorFillMethod, 0, Enum.GetNames(typeof(BoardImages.FillMethod)).Length - 1),
 					GUILayout.ExpandWidth(false));
 				string helpBoxText = _validatorFillMethod == 0 ? "Random" : "By Floor";
-				EditorStyles.helpBox.fixedWidth = GUI.skin.label.CalcSize(new GUIContent(helpBoxText)).x;
 				EditorGUILayout.HelpBox(new GUIContent(helpBoxText));
 				EditorGUILayout.EndHorizontal();
 
@@ -503,7 +500,7 @@ namespace Editor
 
 				SeparateSubMenu();
 
-				string description = "Level Num: ";
+				string description = "Level Number: ";
 				_levelNumber = EditorGUILayout.IntField(description,
 					Mathf.Clamp(_levelNumber, -1,10000),
 					GUILayout.ExpandWidth(false));
@@ -513,7 +510,6 @@ namespace Editor
 					Mathf.Clamp(_fillMethod, 0, Enum.GetNames(typeof(BoardImages.FillMethod)).Length - 1),
 					GUILayout.ExpandWidth(false));
 				string helpBoxText = _fillMethod == 0 ? "Random" : "By Floor";
-				EditorStyles.helpBox.fixedWidth = GUI.skin.label.CalcSize(new GUIContent(helpBoxText)).x;
 				EditorGUILayout.HelpBox(new GUIContent(helpBoxText));
 				EditorGUILayout.EndHorizontal();
 

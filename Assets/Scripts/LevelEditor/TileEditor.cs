@@ -25,33 +25,32 @@ namespace LevelEditor
 			switch (type)
 			{
 				case TileCreator.TileTypes.Single:
-					tile = InstantiateTile(TileCreator.TileTypes.Single, xOffset, -yOffset);
+					tile = InstantiateTile(TileCreator.TileTypes.Single, x, y, xOffset, -yOffset);
 					break;
 				case TileCreator.TileTypes.DoubleH:
-					tile = InstantiateTile(TileCreator.TileTypes.DoubleH, xOffset + rect.width / 2, -yOffset);
+					tile = InstantiateTile(TileCreator.TileTypes.DoubleH, x, y, xOffset + rect.width / 2, -yOffset);
 					break;
 				case TileCreator.TileTypes.DoubleV:
-					tile = InstantiateTile(TileCreator.TileTypes.DoubleV, xOffset, -(yOffset + rect.height / 2));
+					tile = InstantiateTile(TileCreator.TileTypes.DoubleV, x, y, xOffset, -(yOffset + rect.height / 2));
 					break;
 			}
 
 			return tile;
 		}
 
-		private GameObject InstantiateTile(TileCreator.TileTypes type, float xOffset = 0f, float yOffset = 0f)
+		private GameObject InstantiateTile(TileCreator.TileTypes type, int x, int y, float xOffset = 0f, float yOffset = 0f)
 		{
 			GameObject floor = GameObject.Find($"Floor {_selectedFloor.ToString()}");
 			GameObject tile = Instantiate(boardTile, floor.transform, true);
 			Vector3 tilePos = tile.transform.position;
 			tile.transform.position = new Vector3(tilePos.x + xOffset, tilePos.y + yOffset, -_selectedFloor);
 
-			Snap snapScript = tile.GetComponent<Snap>();
-			snapScript.EditorTile = tile.GetComponent<EditorTile>();
-			snapScript.EditorTile.floor = _selectedFloor;
-			snapScript.EditorTile.type = type;
-			snapScript.GridCell = gridCell;
-			snapScript.BoardSize(_gridEditor);
-			snapScript.OnDrawGizmos();
+			EditorTile editorTile = tile.GetComponent<EditorTile>();
+			editorTile.GridEditor = _gridEditor;
+			editorTile.x = x;
+			editorTile.y = y;
+			editorTile.type = type;
+			editorTile.SetName();
 
 			Selection.activeGameObject = tile;
 

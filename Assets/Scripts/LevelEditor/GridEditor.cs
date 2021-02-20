@@ -7,6 +7,8 @@ namespace LevelEditor
 		[SerializeField] private GameObject gridCell;
 		[SerializeField] private Transform grid;
 
+		private GridTile _selectedCell;
+
 		public static readonly float Gap = 0.1f;
 
 		public void CreateGrid()
@@ -22,9 +24,21 @@ namespace LevelEditor
 						new Vector3(i * (boardRect.width + Gap), j * (-boardRect.height - Gap), 0),
 						gridCell.transform.rotation);
 					cell.transform.SetParent(grid);
-					cell.name = $"{i.ToString()}x{j.ToString()}";
+					cell.name = $"{j.ToString()}x{i.ToString()}";
+					GridTile gc = cell.GetComponent<GridTile>();
+					gc.Initialize(this);
+					gc.x = j;
+					gc.y = i;
 				}
 			}
+		}
+
+		public void ChangeSelectedCell(GridTile newGridCell)
+		{
+			if (_selectedCell != null)
+				_selectedCell.Unselect();
+
+			_selectedCell = newGridCell;
 		}
 
 		public void ClearGrid()
@@ -34,6 +48,7 @@ namespace LevelEditor
 					DestroyImmediate(child.gameObject);
 		}
 
+		public GridTile SelectedCell => _selectedCell;
 		public int Width { get; set; }
 		public int Height { get; set; }
 	}

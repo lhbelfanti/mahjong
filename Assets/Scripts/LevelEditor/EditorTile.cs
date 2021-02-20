@@ -5,14 +5,10 @@ namespace LevelEditor
 {
 	public class EditorTile : MonoBehaviour
 	{
-		[HideInInspector]
-		public int x;
-		[HideInInspector]
-		public int y;
-		[HideInInspector]
-		public int floor;
-		[HideInInspector]
-		public TileCreator.TileTypes type;
+		[HideInInspector] public int x;
+		[HideInInspector] public int y;
+		[HideInInspector] public int floor;
+		[HideInInspector] public TileCreator.TileTypes type;
 
 		public string Name()
 		{
@@ -32,5 +28,22 @@ namespace LevelEditor
 
 			return newName;
 		}
+
+		public void SetName()
+		{
+			gameObject.name = Name();
+		}
+
+		public void SetNewPosition()
+		{
+			GridTile gridTile = GridEditor.SelectedCell;
+			x = gridTile.x;
+			y = gridTile.y;
+			transform.position = gridTile.transform.position;
+			GridEditor.ChangeSelectedCell(null);
+			SetName();
+		}
+
+		public GridEditor GridEditor { get; set; }
 	}
 }
