@@ -75,7 +75,7 @@ namespace LevelEditor
 		public void SaveTemp(int fillType)
 		{
 			Save(EditorLevelNum, fillType, "");
-			PlayerPrefs.SetInt("LevelSelected", 99999);
+			PlayerPrefs.SetInt("LevelSelected", EditorLevelNum);
 		}
 
 		public void Save(int level, int fillType, string path)
