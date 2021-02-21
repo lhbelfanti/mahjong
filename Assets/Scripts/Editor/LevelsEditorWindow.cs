@@ -154,7 +154,7 @@ namespace Editor
 					{
 						if (_validatorEnabled && EditorUtility.DisplayDialog("Do you want to save the current level?",
 							"It will be saved in the editor temporary file and if you want to save it with another " +
-							"name you'll have to import it again and save it.", "Yes", "Cancel"))
+							"name you'll have to import it again and save it.", "Yes", "No"))
 						{
 							_exporter = new Exporter(_boardEditor.Tiles(), _gridEditor, _floorEditor);
 							_exporter.Validate();
@@ -520,6 +520,8 @@ namespace Editor
 				{
 					if (_exporter != null)
 					{
+						if (_savePath == "")
+							_savePath = _defaultPath;
 						_exporter.Save(_levelNumber, _fillMethod, _savePath);
 						EditorUtility.DisplayDialog("Level saved",
 							"The level was successfully saved.", "Ok");

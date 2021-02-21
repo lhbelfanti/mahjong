@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Board;
 using Board.Tile;
@@ -47,7 +46,9 @@ namespace LevelEditor
 					for (int k = 0; k < tiles.Count; k++)
 					{
 						TileCreator.TileTypes state = (TileCreator.TileTypes) tiles[k];
-						if (state == TileCreator.TileTypes.Empty)
+						if (state == TileCreator.TileTypes.Empty ||
+						    state == TileCreator.TileTypes.DummyH ||
+						    state == TileCreator.TileTypes.DummyV)
 							continue;
 						GameObject tile = _tileEditor.CreateTile(state, f, k, j);
 						EditorTile editorTile = tile.GetComponent<EditorTile>();

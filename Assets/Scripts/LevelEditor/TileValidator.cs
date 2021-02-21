@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Board.Tile;
+using UnityEngine;
 
 namespace LevelEditor
 {
@@ -9,7 +10,6 @@ namespace LevelEditor
 
 		private int[,,] _tiles;
 		private  string _message;
-
 
 		public TileValidator(int[,,] tiles, EditorTile et)
 		{
@@ -29,7 +29,10 @@ namespace LevelEditor
 
 		protected bool IsAnEmptyPosition(int x, int y, int f, string msg)
 		{
-			if (_tiles[x, y, f] != 0)
+			int tileType = _tiles[x, y, f];
+			if (tileType != (int) TileCreator.TileTypes.Empty &&
+			    tileType != (int) TileCreator.TileTypes.DummyH &&
+			    tileType != (int) TileCreator.TileTypes.DummyV)
 			{
 				_message += msg;
 				return false;
@@ -40,7 +43,7 @@ namespace LevelEditor
 
 		protected bool IsThereATile(int x, int y, int f, string msg)
 		{
-			if (_tiles[x, y, f] == 0)
+			if (_tiles[x, y, f] == (int) TileCreator.TileTypes.Empty)
 			{
 				_message += msg;
 				return false;

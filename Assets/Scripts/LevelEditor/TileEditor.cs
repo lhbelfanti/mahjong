@@ -47,8 +47,10 @@ namespace LevelEditor
 
 			EditorTile editorTile = tile.GetComponent<EditorTile>();
 			editorTile.GridEditor = _gridEditor;
-			editorTile.x = x;
-			editorTile.y = y;
+			// Made on purpose
+			editorTile.x = y;
+			editorTile.y = x;
+			editorTile.floor = _selectedFloor;
 			editorTile.type = type;
 			editorTile.SetName();
 

@@ -48,23 +48,23 @@ namespace LevelEditor
 						if (!tileValidator.Validate())
 							CanBeExported = false;
 
-						_tiles[et.x, et.y, et.floor] = 1;
+						_tiles[et.x, et.y, et.floor] = (int) TileCreator.TileTypes.Single;
 						break;
 					case TileCreator.TileTypes.DoubleH:
 						tileValidator = new DoubleHTileValidator(_tiles, et);
 						if (!tileValidator.Validate())
 							CanBeExported = false;
 
-						_tiles[et.x, et.y, et.floor] = 2;
-						_tiles[et.x + 1, et.y, et.floor] = 2;
+						_tiles[et.x, et.y, et.floor] = (int) TileCreator.TileTypes.DoubleH;
+						_tiles[et.x, et.y + 1, et.floor] = (int) TileCreator.TileTypes.DummyH;
 						break;
 					case TileCreator.TileTypes.DoubleV:
 						tileValidator = new DoubleVTileValidator(_tiles, et);
 						if (!tileValidator.Validate())
 							CanBeExported = false;
 
-						_tiles[et.x, et.y, et.floor] = 4;
-						_tiles[et.x, et.y + 1, et.floor] = 4;
+						_tiles[et.x, et.y, et.floor] = (int) TileCreator.TileTypes.DoubleV;
+						_tiles[et.x + 1, et.y, et.floor] = (int) TileCreator.TileTypes.DummyV;
 						break;
 				}
 			}

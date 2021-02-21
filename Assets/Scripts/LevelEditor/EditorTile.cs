@@ -39,9 +39,26 @@ namespace LevelEditor
 			GridTile gridTile = GridEditor.SelectedCell;
 			x = gridTile.x;
 			y = gridTile.y;
-			transform.position = gridTile.transform.position;
+			SetPosition(gridTile);
 			GridEditor.ChangeSelectedCell(null);
 			SetName();
+		}
+
+		private void SetPosition(GridTile gridTile)
+		{
+			Rect gridRect = gridTile.GetComponent<RectTransform>().rect;
+			Vector3 newPosition = gridTile.transform.position;
+			newPosition.z = transform.position.z;
+			switch (type)
+			{
+				case TileCreator.TileTypes.DoubleH:
+					newPosition.x += gridRect.width / 2 + GridEditor.Gap;
+					break;
+				case TileCreator.TileTypes.DoubleV:
+					newPosition.y -= gridRect.height / 2 + GridEditor.Gap;
+					break;
+			}
+			transform.position = newPosition;
 		}
 
 		public GridEditor GridEditor { get; set; }

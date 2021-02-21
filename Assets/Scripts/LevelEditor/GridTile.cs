@@ -27,7 +27,11 @@ namespace LevelEditor
 		public void Initialize(GridEditor gridEditor)
 		{
 			_gridEditor = gridEditor;
-			_material = GetComponent<Renderer>().material;
+
+			Renderer r = GetComponent<Renderer>();
+			_material = new Material(r.sharedMaterial);
+			r.sharedMaterial = _material;
+
 			Unselect();
 		}
 	}
