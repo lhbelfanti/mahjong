@@ -15,6 +15,7 @@ namespace Game
 
 		[SerializeField] private GameObject gameOverUI;
 		[SerializeField] private GameObject winUI;
+		[SerializeField] private GameObject winLastLevelUI;
 		[SerializeField] private TextMeshProUGUI levelText;
 
 		private AudioManager _audioManager;
@@ -49,9 +50,17 @@ namespace Game
 		{
 			_audioManager.PauseMusic();
 			_audioManager.PlaySound(_audioManager.win);
+
+			int currentLevel = PlayerPrefs.GetInt("LevelSelected", 1);
+			int lastLevel = PlayerPrefs.GetInt("LastLevel");
+
+			if (currentLevel == lastLevel)
+				winLastLevelUI.SetActive(true);
+			else
+				winUI.SetActive(true);
+
 			PlayerPrefs.SetInt("LastUnlockedLevel", PlayerPrefs.GetInt("LastUnlockedLevel", 1) + 1);
-			PlayerPrefs.SetInt("LevelSelected", PlayerPrefs.GetInt("LevelSelected", 1) + 1);
-			winUI.SetActive(true);
+			PlayerPrefs.SetInt("LevelSelected", currentLevel + 1);
 		}
 
 		private void EndGame()

@@ -29,6 +29,8 @@ namespace Level
 			FileInfo[] info = dir.GetFiles("level*.json");
 			int availableLevels = info.Length;
 
+			PlayerPrefs.SetInt("LastLevel", availableLevels);
+
 			for (int i = 0; i < availableLevels; i++)
 			{
 				int levelId = i + 1;
