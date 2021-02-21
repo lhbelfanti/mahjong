@@ -12,6 +12,7 @@ namespace Editor
 	public class LevelsEditorWindow : EditorWindow
 	{
 		public static bool OnGUIActive;
+		public static bool ScriptsLoaded;
 
 		private Vector2 _scrollPos;
 
@@ -21,7 +22,6 @@ namespace Editor
 		private BoardEditor _boardEditor;
 		private FloorEditor _floorEditor;
 		private TileEditor _tileEditor;
-		private bool _scriptsLoaded;
 
 		// Importer
 		private bool _showImporterMenu = true;
@@ -74,7 +74,7 @@ namespace Editor
 				_tileEditor = editor.GetComponent<TileEditor>();
 				_defaultPath = $"{Application.dataPath}/Resources/Text/";
 				_savePath = _defaultPath;
-				_scriptsLoaded = true;
+				ScriptsLoaded = true;
 			}
 		}
 
@@ -107,7 +107,7 @@ namespace Editor
 				return;
 			}
 
-			if (!_scriptsLoaded)
+			if (!ScriptsLoaded)
 			{
 				OnEnable();
 				return;

@@ -10,47 +10,34 @@ namespace Board
 		private Vector3 _boardSize;
 		public void GetBoardSpecs(List<LevelInfo> levelInfo, out int tilesCount)
 		{
-			int tc = 0;
+			int totalTiles = 0;
 			int rows = 0;
 			int cols = 0;
 			int floors = 0;
-			int vertical = 0;
-			for (int i = 0; i < levelInfo.Count; i++)
+
+			foreach (LevelInfo lInfo in levelInfo)
 			{
-				List<LevelTiles> levelTiles = levelInfo[i].rows;
-				for (int j = 0; j < levelTiles.Count; j++)
+				List<LevelTiles> levelTiles = lInfo.rows;
+				foreach (LevelTiles lTiles in levelTiles)
 				{
-					List<int> tiles = levelTiles[j].tiles;
-					for (int k = 0; k < tiles.Count; k++)
+					List<int> tiles = lTiles.tiles;
+					foreach (int t in tiles)
 					{
-						if (tiles[k] != (int) TileCreator.TileTypes.Empty)
-							tc++;
+						TileCreator.TileTypes type = (TileCreator.TileTypes) t;
 
-						if (tiles[k] == (int) TileCreator.TileTypes.DoubleH)
-							k++;
-
-						if (tiles[k] == (int) TileCreator.TileTypes.DoubleV && vertical == 0)
-						{
-							vertical++;
-							tc++;
-						}
-						else if (tiles[k] == (int) TileCreator.TileTypes.DoubleV && vertical != 0)
-						{
-							vertical--;
-						}
+						if (type != TileCreator.TileTypes.Empty &&
+						    type != TileCreator.TileTypes.DummyH &&
+						    type != TileCreator.TileTypes.DummyV)
+							totalTiles++;
 					}
-
-					if (rows < tiles.Count)
-						rows = tiles.Count;
+					rows = Mathf.Max(rows, tiles.Count);
 				}
-
-				if (cols < levelTiles.Count)
-					cols = levelTiles.Count;
+				cols = Mathf.Max(cols, levelTiles.Count);
 
 				floors++;
 			}
 
-			tilesCount = tc;
+			tilesCount = totalTiles;
 			_boardSize = new Vector3(rows, cols, floors);
 		}
 

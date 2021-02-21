@@ -26,9 +26,7 @@ namespace Board
 
 		public void CreateBoard(int levelId)
 		{
-			string levelPath = levelId == Exporter.EditorLevelNum
-				? Exporter.EditorLevelPath
-				: $"Text/level{levelId.ToString()}";
+			string levelPath = levelId == Exporter.EditorLevelNum ? Exporter.EditorLevelPath : $"Text/level{levelId.ToString()}";
 			TextAsset levelJson = Resources.Load<TextAsset>(levelPath);
 			LevelData levelData = JsonUtility.FromJson<LevelData>(levelJson.text);
 			List<LevelInfo> levelInfo = levelData.data;
@@ -53,43 +51,11 @@ namespace Board
 					for (int k = 0; k < tiles.Count; k++)
 					{
 						bool isMiddleTile = IsMiddleTile(k, j, f);
-						int type = tiles[k];
-						switch (type)
-						{
-							// Handling the empty case. Should not create a tile.
-							case (int) TileCreator.TileTypes.Empty:
-								_boardTiles[k, j, f] = null;
-								break;
-							// Handling the basic case
-							case (int) TileCreator.TileTypes.Single:
-								_boardTiles[k, j, f] = _tileCreator.CreateTile(new Vector3(k, j, f), isMiddleTile);
-								break;
-							// Handling the case where the tile should be over 2 other tiles (in the middle horizontally)
-							case (int) TileCreator.TileTypes.DoubleH:
-							{
-								_boardTiles[k, j, f] = _tileCreator.CreateTile(new Vector3(k, j, f), isMiddleTile,
-									TileCreator.TileTypes.DoubleH);
-								_boardTiles[k + 1, j, f] = _tileCreator.CreateTile(new Vector3(k + 1, j, f), isMiddleTile,
-									TileCreator.TileTypes.DummyH);
-								SelectMiddleTile(IsMiddleTile(k + 1, j, f), k + 1, j, f);
-								k++;
-								break;
-							}
-							// Handling the case where the tile should be over 2 other tiles (in the middle vertically)
-							case (int) TileCreator.TileTypes.DoubleV:
-							{
-								Tile.Tile firstVTile = j - 1 >= 0 ? _boardTiles[k, j - 1, f] : null;
-								if (!firstVTile || (firstVTile && firstVTile.Type != TileCreator.TileTypes.DoubleV))
-								{
-									_boardTiles[k, j, f] = _tileCreator.CreateTile(new Vector3(k, j, f), isMiddleTile,
-										TileCreator.TileTypes.DoubleV);
-									_boardTiles[k, j + 1, f] = _tileCreator.CreateTile(new Vector3(k,  j + 1, f), isMiddleTile,
-										TileCreator.TileTypes.DummyV);
-									SelectMiddleTile(IsMiddleTile(k, j + 1, f), k + 1, j, f);
-								}
-								break;
-							}
-						}
+						TileCreator.TileTypes type = (TileCreator.TileTypes) tiles[k];
+						if (type == TileCreator.TileTypes.Empty)
+							_boardTiles[k, j, f] = null;
+						else
+							_boardTiles[k, j, f] = _tileCreator.CreateTile(new Vector3(k, j, f), isMiddleTile, type);
 
 						SelectMiddleTile(isMiddleTile, k, j, f);
 					}

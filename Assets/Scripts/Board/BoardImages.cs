@@ -15,7 +15,7 @@ namespace Board
 			ByFloor = 1
 		}
 
-		private List<Sprite> _tileSprites;
+		private readonly List<Sprite> _tileSprites;
 
 		public BoardImages(int tilesCount)
 		{

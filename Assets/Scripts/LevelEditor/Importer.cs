@@ -45,12 +45,12 @@ namespace LevelEditor
 					List<int> tiles = levelTiles[j].tiles;
 					for (int k = 0; k < tiles.Count; k++)
 					{
-						TileCreator.TileTypes state = (TileCreator.TileTypes) tiles[k];
-						if (state == TileCreator.TileTypes.Empty ||
-						    state == TileCreator.TileTypes.DummyH ||
-						    state == TileCreator.TileTypes.DummyV)
+						TileCreator.TileTypes type = (TileCreator.TileTypes) tiles[k];
+						if (type == TileCreator.TileTypes.Empty ||
+						    type == TileCreator.TileTypes.DummyH ||
+						    type == TileCreator.TileTypes.DummyV)
 							continue;
-						GameObject tile = _tileEditor.CreateTile(state, f, k, j);
+						GameObject tile = _tileEditor.CreateTile(type, f, k, j);
 						EditorTile editorTile = tile.GetComponent<EditorTile>();
 						_boardEditor.AddTile(editorTile);
 					}

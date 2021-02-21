@@ -63,6 +63,7 @@ namespace Editor
 				try
 				{
 					LevelsEditorWindow.OnGUIActive = false;
+					LevelsEditorWindow.ScriptsLoaded = false;
 					EditorSceneManager.OpenScene(MasterScene);
 				}
 				catch

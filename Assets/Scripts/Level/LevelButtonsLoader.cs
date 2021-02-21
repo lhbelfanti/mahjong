@@ -40,7 +40,7 @@ namespace Level
 		{
 			GameObject lvlGameObject = !locked ? levelButton : lockedLevelButton;
 			GameObject lvlButton = Instantiate(lvlGameObject, gameObject.transform, true);
-			lvlButton.GetComponentInChildren<TextMeshProUGUI>().text += index.ToString();;
+			lvlButton.GetComponentInChildren<TextMeshProUGUI>().text += index.ToString();
 			lvlButton.name = $"Level {index.ToString()}";
 			if (!locked)
 				lvlButton.GetComponent<Button>().onClick.AddListener(() => OnLevelButtonClicked(index));

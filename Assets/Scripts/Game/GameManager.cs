@@ -1,4 +1,5 @@
 ﻿using Audio;
+using TMPro;
 using UnityEngine;
 
 namespace Game
@@ -14,6 +15,7 @@ namespace Game
 
 		[SerializeField] private GameObject gameOverUI;
 		[SerializeField] private GameObject winUI;
+		[SerializeField] private TextMeshProUGUI levelText;
 
 		private AudioManager _audioManager;
 
@@ -23,6 +25,7 @@ namespace Game
 		{
 			_gameState = GameState.Default;
 			_audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+			levelText.text += PlayerPrefs.GetInt("LevelSelected", 1).ToString();
 		}
 
 		private void Update()

@@ -49,8 +49,6 @@ namespace Board.Tile
 			if (fakeMiddle)
 				tile.gameObject.SetActive(false);
 
-
-
 			return tile;
 		}
 
@@ -85,21 +83,13 @@ namespace Board.Tile
 			return new Vector2(xPos, yPos);
 		}
 
-
 		private bool ShouldShiftTileX(Vector3 index, out Tile bottomTile)
 		{
 			index.ToInts(out int x, out int y, out int floor);
-			int boardSize = (int) BoardSize.x;
-
-			/* If the tile is over another tile and the next one to the one that is at the bottom is null,
-			 then I know that the tile should be positioned over the one that is in the bottom, shifted to the left in x.
-			 Example -> My tile: (0, 0) floor 1 --- Bottom tile: (0, 0) floor 0 --- Next bottom tile: (1, 0) floor 0
-			 If it's null then I know that in the level config there is a 2 in position (0,0,0) and position (1,0,0), and
-			 I should position it over the bottom tile but shifted to the left in x. */
 			if (floor != 0 && BoardTiles[x, y, floor - 1])
 			{
 				Tile dummyH = BoardTiles[x + 1, y, floor - 1];
-				if (x <= boardSize - 1 && dummyH && dummyH.Type == TileTypes.DummyH)
+				if (x <= (int) BoardSize.x - 1 && dummyH && dummyH.Type == TileTypes.DummyH)
 				{
 					bottomTile = BoardTiles[x, y, floor - 1];
 					return true;
