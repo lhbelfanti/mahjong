@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using Board.Tile;
 using Level;
+using Newtonsoft.Json;
 using UnityEngine;
+using Utils;
 
 namespace LevelEditor
 {
@@ -103,10 +105,14 @@ namespace LevelEditor
 				levelData.data.Add(levelInfo);
 			}
 
-			string levelDataJson = JsonUtility.ToJson(levelData, true);
+
 			string url = path == ""
 				? $"{Application.dataPath}/Resources/{EditorLevelPath}.json"
 				: $"{path}level{level.ToString()}.json";
+
+			JsonSerializerSettings settings = new JsonSerializerSettings { Formatting = Formatting.Indented,};
+			settings.Converters.Add(new CustomJsonConverter());
+			string levelDataJson = JsonConvert.SerializeObject(levelData, settings);
 
 			System.IO.File.WriteAllText(url, levelDataJson);
 		}
