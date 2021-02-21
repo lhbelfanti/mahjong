@@ -371,7 +371,10 @@ namespace Editor
 					{
 						EditorTile et = tiles[0];
 						if (et.floor != i)
-							break;
+						{
+							tiles.RemoveAt(0);
+							continue;
+						}
 
 						EditorGUILayout.BeginHorizontal();
 						GUILayout.Label(et.Name(), labelStyle);
