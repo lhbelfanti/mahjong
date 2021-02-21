@@ -31,4 +31,4 @@ The objective of the game is to remove all pairs of tiles from the board. The us
 The project contains 3 scenes:
 - The **Main** scene: where the user can select a level to play, can change the audio settings and can quit the game.
 - The **Game** scene: where the game takes place.
-- The **Editor** scene: where the levels can be created, validated, tested and exported. It also has a section where created levels can be imported to be modified.
+- The [**Editor** scene](Assets/Scripts/Editor/README.md): where the levels can be created, validated, tested and exported. It also has a section where created levels can be imported to be modified.
