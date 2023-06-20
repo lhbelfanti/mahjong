@@ -7,6 +7,9 @@
 <p align="center">
     <img src="https://img.shields.io/github/repo-size/lhbelfanti/mahjong?label=Repo%20size" alt="Repo size" />
     <img src="https://img.shields.io/github/license/lhbelfanti/mahjong?label=License" alt="License" />
+    <a href="ttps://lhbelfanti.gitlab.io/mahjong/">
+      <img src="https://img.shields.io/badge/Game-%23000000.svg?logo=unity&logoColor=white&label=Unity" alt="Udemy Course" />
+    </a>
 </p>
 
 ---
