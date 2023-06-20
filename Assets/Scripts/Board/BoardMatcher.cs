@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Board.Tile;
 using Game;
 using UnityEngine;
-using Utils;
 
 namespace Board
 {
@@ -21,7 +20,7 @@ namespace Board
 
 		public bool CanBeSelected(Tile.Tile tile)
 		{
-			Vector3 index = tile.Index;
+			TileIndex index = tile.Index;
 
 			GetNeighbours(index, out Tile.Tile top, out Tile.Tile right, out Tile.Tile left);
 
@@ -31,24 +30,23 @@ namespace Board
 			return false;
 		}
 
-		private void GetNeighbours(Vector3 index, out Tile.Tile top, out Tile.Tile right, out Tile.Tile left)
+		private void GetNeighbours(TileIndex ti, out Tile.Tile top, out Tile.Tile right, out Tile.Tile left)
 		{
 			Tile.Tile[,,] boardTiles = _boardCreator.BoardTiles;
 			Vector3 boardSize = _boardCreator.BoardSize;
-			index.ToInts(out int x, out int y, out int floor);
 
 			top = null;
 			right = null;
 			left = null;
 
-			if (floor < (int) boardSize.z - 1)
-				top = boardTiles[x, y, floor + 1];
+			if (ti.floor < (int) boardSize.z - 1)
+				top = boardTiles[ti.x, ti.y, ti.floor + 1];
 
-			if (x > 0)
-				left = boardTiles[x - 1, y, floor];
+			if (ti.x > 0)
+				left = boardTiles[ti.x - 1, ti.y, ti.floor];
 
-			if (x < (int) boardSize.x - 1)
-				right = boardTiles[x + 1, y, floor];
+			if (ti.x < (int) boardSize.x - 1)
+				right = boardTiles[ti.x + 1, ti.y, ti.floor];
 		}
 
 		public bool Match(List<Tile.Tile> selectedTiles)
@@ -65,12 +63,12 @@ namespace Board
 			Tile.Tile[,,] boardTiles = _boardCreator.BoardTiles;
 			foreach (Tile.Tile tile in selectedTiles)
 			{
-				tile.Index.ToInts(out int x, out int y, out int z);
-				boardTiles[x, y, z] = null;
+				TileIndex ti = tile.Index;
+				boardTiles[ti.x, ti.y, ti.floor] = null;
 				if (tile.Type == TileCreator.TileTypes.DoubleH) // Removing the dummy tile
-					boardTiles[x + 1, y, z] = null;
+					boardTiles[ti.x + 1, ti.y, ti.floor] = null;
 				else if (tile.Type == TileCreator.TileTypes.DoubleV) // Removing the dummy tile
-					boardTiles[x, y + 1, z] = null;
+					boardTiles[ti.x, ti.y + 1, ti.floor] = null;
 			}
 
 			if (LevelWon())

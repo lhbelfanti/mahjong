@@ -62,6 +62,6 @@ namespace Board.Tile
 
 		public string Id { get; set; }
 		public TileCreator.TileTypes Type { get; set; }
-		public Vector3 Index { get; set; }
+		public TileIndex Index { get; set; }
 	}
 }

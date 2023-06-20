@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections;
+using System.IO;
 using Audio;
 using Scene;
 using TMPro;
@@ -25,9 +26,14 @@ namespace Level
 
 		private void CreateLevelButtons()
 		{
+			int availableLevels = 0;
+#if (UNITY_WEBGL)
+			availableLevels = 10;
+#else
 			DirectoryInfo dir = new DirectoryInfo("Assets/Resources/Text/");
 			FileInfo[] info = dir.GetFiles("level*.json");
-			int availableLevels = info.Length;
+			availableLevels = info.Length;
+#endif
 
 			PlayerPrefs.SetInt("LastLevel", availableLevels);
 

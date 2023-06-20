@@ -26,13 +26,6 @@ namespace Utils
 			}
 		}
 
-		public static void ToInts(this Vector3 v, out int x, out int y, out int z)
-		{
-			x = (int) v.x;
-			y = (int) v.y;
-			z = (int) v.z;
-		}
-
 		public static List<GameObject> GetActiveChildren(this GameObject element)
 		{
 			List<GameObject> list = new List<GameObject>();
@@ -53,10 +46,12 @@ namespace Utils
 
 		public static void ClearConsole()
 		{
+#if (UNITY_EDITOR)
 			var assembly = Assembly.GetAssembly(typeof(SceneView));
 			var type = assembly.GetType("UnityEditor.LogEntries");
 			var method = type.GetMethod("Clear");
 			method.Invoke(new object(), null);
+#endif
 		}
 	}
 }

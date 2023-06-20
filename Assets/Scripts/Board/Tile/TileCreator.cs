@@ -21,21 +21,20 @@ namespace Board.Tile
 			DummyV = 5
 		}
 
-		public Tile CreateTile(Vector3 index, bool isMiddleTile, TileTypes type = TileTypes.Single, bool fakeMiddle = false)
+		public Tile CreateTile(TileIndex ti, bool isMiddleTile, TileTypes type = TileTypes.Single, bool fakeMiddle = false)
 		{
-			index.ToInts(out int x, out int y, out int floor);
-			Vector2 pos = GetTilePosition(index, type);
+			Vector2 pos = GetTilePosition(ti, type);
 
-			Tile tile = Instantiate(tileGameObject, new Vector3(pos.x, pos.y, -floor * zGap), Quaternion.identity);
-			if (!Floors[floor])
+			Tile tile = Instantiate(tileGameObject, new Vector3(pos.x, pos.y, -ti.floor * zGap), Quaternion.identity);
+			if (!Floors[ti.floor])
 			{
-				Floors[floor] = new GameObject($"Floor {floor.ToString()}");
-				Floors[floor].transform.SetParent(boardGameObject);
+				Floors[ti.floor] = new GameObject($"Floor {ti.floor.ToString()}");
+				Floors[ti.floor].transform.SetParent(boardGameObject);
 			}
-			tile.transform.SetParent(Floors[floor].transform);
-			tile.Index = index;
+			tile.transform.SetParent(Floors[ti.floor].transform);
+			tile.Index = ti;
 			tile.Type = type;
-			tile.transform.name = $"({x.ToString()}x{y.ToString()})-{floor.ToString()}";
+			tile.transform.name = $"({ti.x.ToString()}x{ti.y.ToString()})-{ti.floor.ToString()}";
 
 			if (type == TileTypes.DummyH || type == TileTypes.DummyV)
 			{
@@ -52,9 +51,8 @@ namespace Board.Tile
 			return tile;
 		}
 
-		private Vector2 GetTilePosition(Vector3 index, TileTypes type = TileTypes.Single)
+		private Vector2 GetTilePosition(TileIndex ti, TileTypes type = TileTypes.Single)
 		{
-			index.ToInts(out int x, out int y, out int floor);
 			Rect tileRect = tileGameObject.GetComponent<RectTransform>().rect;
 			Vector3 boardPos = boardGameObject.position;
 
@@ -63,35 +61,34 @@ namespace Board.Tile
 			switch (type)
 			{
 				case TileTypes.DoubleH:
-					bool shouldShiftX = ShouldShiftTileX(index, out Tile bottomTile);
-					xPos = boardPos.x + tileRect.width * x + tileRect.width / 2 -
-					       (shouldShiftX ? tileShift * (int) bottomTile.Index.z : 0);
-					bool shouldShiftY = ShouldShiftTileY(index);
-					yPos = boardPos.y - tileRect.height * y + tileShift * y -
+					bool shouldShiftX = ShouldShiftTileX(ti, out Tile bottomTile);
+					xPos = boardPos.x + tileRect.width * ti.x + tileRect.width / 2 -
+					       (shouldShiftX ? tileShift * bottomTile.Index.floor : 0);
+					bool shouldShiftY = ShouldShiftTileY(ti);
+					yPos = boardPos.y - tileRect.height * ti.y + tileShift * ti.y -
 					       (shouldShiftY ? tileRect.height / 2 : 0);
 					break;
 				case TileTypes.DoubleV:
-					xPos = boardPos.x + tileRect.width * x - tileShift * floor;
-					yPos = boardPos.y - tileRect.height * y - tileRect.height / 2 + tileShift * y;
+					xPos = boardPos.x + tileRect.width * ti.x - tileShift * ti.floor;
+					yPos = boardPos.y - tileRect.height * ti.y - tileRect.height / 2 + tileShift * ti.y;
 					break;
 				default:
-					xPos = boardPos.x + tileRect.width * x - tileShift * floor;
-					yPos = boardPos.y - tileRect.height * y + tileShift * y;
+					xPos = boardPos.x + tileRect.width * ti.x - tileShift * ti.floor;
+					yPos = boardPos.y - tileRect.height * ti.y + tileShift * ti.y;
 					break;
 			}
 
 			return new Vector2(xPos, yPos);
 		}
 
-		private bool ShouldShiftTileX(Vector3 index, out Tile bottomTile)
+		private bool ShouldShiftTileX(TileIndex ti, out Tile bottomTile)
 		{
-			index.ToInts(out int x, out int y, out int floor);
-			if (floor != 0 && BoardTiles[x, y, floor - 1])
+			if (ti.floor != 0 && BoardTiles[ti.x, ti.y, ti.floor - 1])
 			{
-				Tile dummyH = BoardTiles[x + 1, y, floor - 1];
-				if (x <= (int) BoardSize.x - 1 && dummyH && dummyH.Type == TileTypes.DummyH)
+				Tile dummyH = BoardTiles[ti.x + 1, ti.y, ti.floor - 1];
+				if (ti.x <= (int) BoardSize.x - 1 && dummyH && dummyH.Type == TileTypes.DummyH)
 				{
-					bottomTile = BoardTiles[x, y, floor - 1];
+					bottomTile = BoardTiles[ti.x, ti.y, ti.floor - 1];
 					return true;
 				}
 			}
@@ -100,11 +97,10 @@ namespace Board.Tile
 			return false;
 		}
 
-		private bool ShouldShiftTileY(Vector3 index)
+		private bool ShouldShiftTileY(TileIndex ti)
 		{
-			index.ToInts(out int x, out int y, out int floor);
-
-			if (floor != 0 && BoardTiles[x, y, floor - 1] && BoardTiles[x, y, floor - 1].Type == TileTypes.DoubleV)
+			if (ti.floor != 0 && BoardTiles[ti.x, ti.y, ti.floor - 1] &&
+			    BoardTiles[ti.x, ti.y, ti.floor - 1].Type == TileTypes.DoubleV)
 				return true;
 
 			return false;

@@ -1,5 +1,9 @@
 # Editor
 
+## Preview
+
+![Editor preview](editor.gif)
+
 ## Tools
 
 The editor is composed by 2 tools:

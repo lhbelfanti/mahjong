@@ -24,11 +24,23 @@ namespace Board
 			_boardInfo = new BoardInfo();
 		}
 
-		public void CreateBoard(int levelId)
+		public void LoadLevelWebGL(int levelId)
+		{
+			WebGLEmbeddedAssets jsonDataLoader = new WebGLEmbeddedAssets();
+			string levelInfo = jsonDataLoader.GetJSONForLevelAsString(levelId);
+
+			CreateBoard(JsonUtility.FromJson<LevelData>(levelInfo));
+		}
+
+		public LevelData LoadLevel(int levelId)
 		{
 			string levelPath = levelId == Exporter.EditorLevelNum ? Exporter.EditorLevelPath : $"Text/level{levelId.ToString()}";
 			TextAsset levelJson = Resources.Load<TextAsset>(levelPath);
-			LevelData levelData = JsonUtility.FromJson<LevelData>(levelJson.text);
+			return JsonUtility.FromJson<LevelData>(levelJson.text);
+		}
+
+		public void CreateBoard(LevelData levelData)
+		{
 			List<LevelInfo> levelInfo = levelData.data;
 
 			_boardInfo.GetBoardSpecs(levelInfo, out int tilesCount);
@@ -55,7 +67,7 @@ namespace Board
 						if (type == TileCreator.TileTypes.Empty)
 							_boardTiles[k, j, f] = null;
 						else
-							_boardTiles[k, j, f] = _tileCreator.CreateTile(new Vector3(k, j, f), isMiddleTile, type);
+							_boardTiles[k, j, f] = _tileCreator.CreateTile(new TileIndex(k, j, f), isMiddleTile, type);
 
 						SelectMiddleTile(isMiddleTile, k, j, f);
 					}
@@ -72,9 +84,8 @@ namespace Board
 		{
 			if (!_middleTile.gameObject.activeSelf)
 			{
-				Vector3 index = _middleTile.Index;
-				index.ToInts(out int x, out int y, out int f);
-				_boardTiles[x, y, f] = null;
+				TileIndex ti = _middleTile.Index;
+				_boardTiles[ti.x, ti.y, ti.floor] = null;
 				Destroy(_middleTile.gameObject);
 			}
 		}
@@ -94,7 +105,7 @@ namespace Board
 				// Used to center the board based on the middle tile.
 				Tile.Tile middleTile = _boardTiles[k, j, f];
 				if (!middleTile)
-					_boardTiles[k, j, f] = _tileCreator.CreateTile(new Vector3(k, j, f),
+					_boardTiles[k, j, f] = _tileCreator.CreateTile(new TileIndex(k, j, f),
 						true, TileCreator.TileTypes.Single, true);
 
 				middleTile = _boardTiles[k, j, f];

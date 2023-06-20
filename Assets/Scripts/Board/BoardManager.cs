@@ -1,4 +1,5 @@
-﻿using Scene;
+﻿using Level;
+using Scene;
 using UnityEngine;
 
 namespace Board
@@ -21,7 +22,12 @@ namespace Board
 		private void Start()
 		{
 			int levelSelected = PlayerPrefs.GetInt("LevelSelected");
-			_boardCreator.CreateBoard(levelSelected);
+#if (UNITY_WEBGL)
+			_boardCreator.LoadLevelWebGL(levelSelected);
+#else
+			LevelData levelData = _boardCreator.LoadLevel(levelSelected);
+			_boardCreator.CreateBoard(levelData);
+#endif
 			CenterCameraOnBoard();
 		}
 

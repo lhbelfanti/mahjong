@@ -54,7 +54,9 @@ namespace LevelEditor
 			editorTile.type = type;
 			editorTile.SetName();
 
+#if (UNITY_EDITOR)
 			Selection.activeGameObject = tile;
+#endif
 
 			return tile;
 		}
